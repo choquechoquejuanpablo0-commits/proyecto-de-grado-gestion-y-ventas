@@ -66,8 +66,11 @@ async function handleCheckoutSubmit(e) {
   try {
     const user = await getCurrentUser();
 
-    // Recoger datos del formulario
+        // Recoger datos del formulario
+    const orderId = crypto.randomUUID();
+
     const orderData = {
+      id:               orderId,
       order_number:     generateOrderNumber(),
       user_id:          user?.id || null,
       customer_name:    form.querySelector('#customer-name').value.trim(),
@@ -85,14 +88,14 @@ async function handleCheckoutSubmit(e) {
 
     const cart = getCart();
 
-    // Insertar pedido en Supabase
-    const { data: order, error: orderError } = await _supabase
+    // Insertar pedido en Supabase (sin pedir que devuelva la fila)
+    const { error: orderError } = await _supabase
       .from('orders')
-      .insert(orderData)
-      .select()
-      .single();
+      .insert(orderData);
 
     if (orderError) throw orderError;
+
+    const order = orderData;
 
     // Insertar items del pedido
     const items = cart.map(item => ({
