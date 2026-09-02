@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos — CakeSphere Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <div class="admin-app">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <div class="admin-logo-text">Cake<span>Sphere</span></div>
+        <div class="admin-logo-badge">Panel Admin</div>
+      </div>
+      <nav class="admin-nav">
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Principal</div>
+          <a href="dashboard.html" class="admin-nav-link"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="orders.html"    class="admin-nav-link"><span class="nav-icon">📦</span> Pedidos</a>
+          <a href="products.html"  class="admin-nav-link active"><span class="nav-icon">🎂</span> Productos</a>
+          <a href="clients.html"   class="admin-nav-link"><span class="nav-icon">👥</span> Clientes</a>
+        </div>
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Tienda</div>
+          <a href="../index.html"   class="admin-nav-link" target="_blank"><span class="nav-icon">🛒</span> Ver tienda</a>
+          <a href="../catalog.html" class="admin-nav-link" target="_blank"><span class="nav-icon">📋</span> Ver catálogo</a>
+        </div>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-info">
+          <div class="admin-user-avatar">A</div>
+          <div>
+            <div class="admin-user-name">Administrador</div>
+            <div class="admin-user-role">CakeSphere</div>
+          </div>
+        </div>
+        <button class="admin-nav-link" data-logout style="width:100%;margin-top:8px;border:none;cursor:pointer;background:none;font-family:inherit;">
+          <span class="nav-icon">🚪</span> Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div class="admin-topbar-title">Gestión de Productos</div>
+        <div class="admin-topbar-right">
+          <div class="admin-search">
+            <span>🔍</span>
+            <input type="text" id="admin-product-search" placeholder="Buscar producto...">
+          </div>
+          <button id="new-product-btn" class="btn btn-primary btn-sm">+ Nuevo producto</button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- Stats rápidas de productos -->
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:var(--space-6);">
+          <div class="stat-card">
+            <div class="stat-card-body"><div class="stat-card-label">Total productos</div><div class="stat-card-value" id="stat-products">—</div></div>
+            <div class="stat-card-icon stat-icon-products">🎂</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body"><div class="stat-card-label">Disponibles</div><div class="stat-card-value" id="stat-available">—</div></div>
+            <div class="stat-card-icon stat-icon-products" style="background:#e8f7f1;color:var(--color-success);">✓</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body"><div class="stat-card-label">Agotados</div><div class="stat-card-value" id="stat-out-of-stock">—</div></div>
+            <div class="stat-card-icon" style="background:#fdeaea;color:var(--color-error);">✕</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body"><div class="stat-card-label">Destacados</div><div class="stat-card-value" id="stat-featured">—</div></div>
+            <div class="stat-card-icon" style="background:#fdf6e9;color:var(--color-accent-gold);">⭐</div>
+          </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="admin-panel" id="admin-orders-table">
+          <div class="admin-panel-header">
+            <div class="admin-panel-title">Catálogo de productos</div>
+            <div class="admin-panel-actions">
+              <select class="form-select" style="width:auto;padding:0.4rem 2rem 0.4rem 0.75rem;font-size:var(--text-sm);"
+                      onchange="filterProductsByCategory(this.value)">
+                <option value="">Todas las categorías</option>
+                <option value="Pasteles">Pasteles</option>
+                <option value="Cheesecakes">Cheesecakes</option>
+                <option value="Cupcakes">Cupcakes</option>
+                <option value="Especiales">Especiales</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio base</th>
+                  <th>Stock</th>
+                  <th>Disponible</th>
+                  <th>Destacado</th>
+                  <th>Creado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-tbody">
+                <tr>
+                  <td colspan="7" style="text-align:center;padding:var(--space-8);">
+                    <div class="loader-spinner" style="margin:0 auto;"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Crear/Editar Producto -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal" style="max-width:680px;">
+      <div class="modal-header">
+        <div class="modal-title" id="product-form-title">Nuevo Producto</div>
+        <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
+      </div>
+
+      <form id="product-form" novalidate>
+        <!-- Imagen -->
+        <div class="form-group">
+          <label class="form-label">Imagen del producto</label>
+          <div class="admin-image-upload" onclick="document.getElementById('product-image-input').click()">
+            <input type="file" id="product-image-input" accept="image/*">
+            <div style="font-size:2rem;margin-bottom:var(--space-2);">📸</div>
+            <div style="font-size:var(--text-sm);color:var(--color-text-muted);">Haz click para subir imagen</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-light);">PNG, JPG hasta 5MB</div>
+          </div>
+          <img id="product-image-preview" src="" alt="Preview"
+               style="display:none;width:100%;max-height:200px;object-fit:cover;border-radius:var(--radius-lg);margin-top:var(--space-3);">
+          <input type="hidden" id="product-image-url">
+        </div>
+
+        <div class="admin-form-grid">
+          <!-- Nombre -->
+          <div class="form-group admin-form-full">
+            <label class="form-label" for="product-name">Nombre del producto <span class="required">*</span></label>
+            <input type="text" id="product-name" class="form-input" placeholder="Ej: Tarta de Chocolate Premium" required>
+            <span class="form-error"></span>
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group admin-form-full">
+            <label class="form-label" for="product-description">Descripción</label>
+            <textarea id="product-description" class="form-textarea" rows="3"
+                      placeholder="Descripción detallada del producto..."></textarea>
+          </div>
+
+          <!-- Precio -->
+          <div class="form-group">
+            <label class="form-label" for="product-price">Precio base (Bs) <span class="required">*</span></label>
+            <input type="number" id="product-price" class="form-input" placeholder="0.00"
+                   min="0" step="0.50" required>
+            <span class="form-error"></span>
+          </div>
+
+          <!-- Categoría -->
+          <div class="form-group">
+            <label class="form-label" for="product-category">Categoría</label>
+            <select id="product-category" class="form-select">
+              <option value="Pasteles">Pasteles</option>
+              <option value="Cheesecakes">Cheesecakes</option>
+              <option value="Cupcakes">Cupcakes</option>
+              <option value="Especiales">Especiales</option>
+            </select>
+          </div>
+
+          <!-- Stock -->
+          <div class="form-group">
+            <label class="form-label" for="product-stock">Stock disponible <span class="required">*</span></label>
+            <input type="number" id="product-stock" class="form-input" value="10" min="0" required>
+            <span class="form-hint">Cuando llega a 0, se muestra como "Agotado".</span>
+          </div>
+
+          <!-- Disponible -->
+          <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end;">
+            <label class="form-check" style="margin-bottom:var(--space-3);">
+              <input type="checkbox" id="product-available" checked>
+              <span class="form-check-label"><strong>Disponible para compra</strong></span>
+            </label>
+            <label class="form-check">
+              <input type="checkbox" id="product-featured">
+              <span class="form-check-label"><strong>⭐ Producto destacado</strong> (aparece en Home)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Opciones de personalización -->
+        <div style="padding:var(--space-5);background:var(--color-bg-section);border-radius:var(--radius-xl);
+                    margin-top:var(--space-3);">
+          <div style="font-weight:600;font-size:var(--text-sm);color:var(--color-primary);margin-bottom:var(--space-4);">
+            Opciones de personalización (JSON)
+          </div>
+          <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-4);">
+            Formato: <code>[{"name":"Pequeño","price_mod":0},{"name":"Mediano","price_mod":20}]</code>
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="product-sizes">Tamaños / Porciones</label>
+            <textarea id="product-sizes" class="form-textarea" rows="2"
+                      placeholder='[{"name":"Pequeño (6 porciones)","price_mod":0},{"name":"Mediano (12 porciones)","price_mod":20}]'></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="product-flavors">Sabores del bizcocho</label>
+            <textarea id="product-flavors" class="form-textarea" rows="2"
+                      placeholder='[{"name":"Chocolate","price_mod":0},{"name":"Vainilla","price_mod":0},{"name":"Red Velvet","price_mod":5}]'></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="product-coatings">Coberturas / Decoraciones</label>
+            <textarea id="product-coatings" class="form-textarea" rows="2"
+                      placeholder='[{"name":"Ganache","price_mod":0},{"name":"Buttercream","price_mod":5},{"name":"Fondant","price_mod":10}]'></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeModal('product-modal')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile toggle -->
+  <button class="admin-mobile-toggle" id="admin-mobile-toggle">☰</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    // Filtro rápido por categoría
+    let categoryFilter = '';
+    function filterProductsByCategory(cat) {
+      categoryFilter = cat;
+      loadAdminProducts();
+    }
+
+    // Cargar estadísticas rápidas de productos
+    async function loadProductStats() {
+      try {
+        const { data } = await _supabase.from('products').select('is_available, is_featured, stock');
+        if (!data) return;
+        document.getElementById('stat-products').textContent      = data.length;
+        document.getElementById('stat-available').textContent     = data.filter(p => p.is_available && p.stock > 0).length;
+        document.getElementById('stat-out-of-stock').textContent  = data.filter(p => p.stock <= 0).length;
+        document.getElementById('stat-featured').textContent      = data.filter(p => p.is_featured).length;
+      } catch(e) {}
+    }
+    document.addEventListener('DOMContentLoaded', loadProductStats);
+  </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link">Inicio</a>
+        <a href="catalog.html" class="navbar-link">Catálogo</a>
+        <a href="contact.html" class="navbar-link">Contacto</a>
+        <a href="login.html"   class="navbar-link" id="nav-login">Iniciar sesión</a>
+        <a href="orders.html"  class="navbar-link" id="nav-profile" style="display:none;">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout style="display:none;">Cerrar sesión</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn">🛒<span class="cart-count" style="display:none;">0</span></a>
+        <button class="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO PEQUEÑO -->
+  <div class="page-hero">
+    <div class="container">
+      <h1 class="page-hero-title">Tu Carrito</h1>
+      <p class="page-hero-sub">Revisa tu selección antes de confirmar el pedido</p>
+    </div>
+  </div>
+
+  <!-- CART LAYOUT -->
+  <div class="container">
+    <div class="cart-layout">
+
+      <!-- LISTA DE ÍTEMS -->
+      <div class="cart-items-section">
+        <!-- Breadcrumb / steps -->
+        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);
+                    color:var(--color-text-muted);margin-bottom:var(--space-5);">
+          <span style="color:var(--color-accent-gold);font-weight:700;">🛒 Carrito</span>
+          <span>›</span>
+          <span>Checkout</span>
+          <span>›</span>
+          <span>Confirmación</span>
+        </div>
+
+        <div id="cart-items-list">
+          <!-- Se renderiza con cart.js -->
+          <div class="skeleton" style="height:140px;border-radius:var(--radius-xl);margin-bottom:12px;"></div>
+          <div class="skeleton" style="height:140px;border-radius:var(--radius-xl);margin-bottom:12px;"></div>
+        </div>
+
+        <!-- Continuar comprando -->
+        <div style="margin-top:var(--space-6);">
+          <a href="catalog.html" class="btn btn-ghost">← Seguir comprando</a>
+        </div>
+      </div>
+
+      <!-- RESUMEN -->
+      <div>
+        <div class="cart-summary">
+          <div class="cart-summary-title">📋 Resumen del pedido</div>
+
+          <div class="cart-summary-row">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">bs 0.00</span>
+          </div>
+          <div class="cart-summary-row">
+            <span>Envío</span>
+            <span id="cart-delivery">bs 5.00</span>
+          </div>
+
+          <div class="cart-summary-total">
+            <span class="label">Total</span>
+            <span class="amount" id="cart-total">bs 0.00</span>
+          </div>
+
+          <a href="checkout.html" id="checkout-btn" class="btn btn-gold btn-lg btn-block" disabled>
+            Proceder al pago →
+          </a>
+
+          <div style="margin-top:var(--space-4);text-align:center;">
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted);">
+              🔒 Pago seguro y garantizado
+            </p>
+          </div>
+
+          <!-- Métodos de pago aceptados -->
+          <div style="margin-top:var(--space-5);padding-top:var(--space-4);border-top:1px solid var(--color-border);">
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted);text-align:center;margin-bottom:var(--space-3);">
+              Aceptamos
+            </p>
+            <div style="display:flex;justify-content:center;gap:var(--space-3);flex-wrap:wrap;">
+              <span style="font-size:var(--text-xs);background:var(--color-bg-section);padding:4px 10px;border-radius:var(--radius-md);">💵 Efectivo</span>
+              <span style="font-size:var(--text-xs);background:var(--color-bg-section);padding:4px 10px;border-radius:var(--radius-md);">🏦 Transferencia</span>
+              <span style="font-size:var(--text-xs);background:var(--color-bg-section);padding:4px 10px;border-radius:var(--radius-md);">📱 Yape/Plin</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cupón (decorativo) -->
+        <div style="background:white;border-radius:var(--radius-xl);border:1px solid var(--color-border);
+                    padding:var(--space-5);margin-top:var(--space-4);">
+          <div style="font-weight:600;font-size:var(--text-sm);color:var(--color-primary);margin-bottom:var(--space-3);">
+            🎟 ¿Tienes un cupón?
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <input type="text" class="form-input" placeholder="Código de descuento" style="flex:1;">
+            <button class="btn btn-outline btn-sm" onclick="showToast('Info','Los cupones estarán disponibles pronto.','info')">Aplicar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding-bottom:var(--space-16);"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Cake<span>Sphere</span></div>
+          <p class="footer-desc">Pasteles artesanales premium para cada ocasión especial.</p>
+          <div class="footer-social"><a href="#">📷</a><a href="#">📘</a><a href="#">💬</a></div>
+        </div>
+        <div class="footer-col"><h4>Menú</h4><div class="footer-links"><a href="index.html">Inicio</a><a href="catalog.html">Catálogo</a></div></div>
+        <div class="footer-col"><h4>Mi cuenta</h4><div class="footer-links"><a href="login.html">Iniciar sesión</a><a href="orders.html">Mis pedidos</a></div></div>
+        <div class="footer-col"><h4>Contacto</h4><div class="footer-links"><a href="tel:+59178594895">📞 +591 78594895</a></div></div>
+      </div>
+    </div>
+    <div class="container"><div class="footer-bottom"><p>© 2026 CakeSphere. Todos los derechos reservados. · <a href="admin/login.html" style="color:var(--color-text-muted);">Admin</a></p></div></div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

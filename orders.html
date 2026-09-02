@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Pedidos — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link">Inicio</a>
+        <a href="catalog.html" class="navbar-link">Catálogo</a>
+        <a href="contact.html" class="navbar-link">Contacto</a>
+        <a href="orders.html"  class="navbar-link active" id="nav-profile">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout>Cerrar sesión</a>
+        <a href="login.html"   class="navbar-link" id="nav-login" style="display:none;">Iniciar sesión</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn">🛒<span class="cart-count" style="display:none;">0</span></a>
+        <button class="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <h1 class="page-hero-title">Mi Cuenta</h1>
+      <p class="page-hero-sub">Revisa el estado de tus pedidos y tu información personal</p>
+    </div>
+  </div>
+
+  <!-- ORDERS LAYOUT -->
+  <div class="container">
+    <div class="orders-layout">
+
+      <!-- SIDEBAR DE CUENTA -->
+      <aside class="account-sidebar">
+        <div class="account-user">
+          <div class="account-avatar" id="account-avatar">?</div>
+          <div class="account-name" id="account-name">Cargando...</div>
+          <div class="account-email" id="account-email">—</div>
+        </div>
+
+        <nav>
+          <a href="orders.html" class="account-nav-link active">
+            <span>📦</span> Mis pedidos
+          </a>
+          <a href="#profile" class="account-nav-link" id="nav-profile-link">
+            <span>👤</span> Mi perfil
+          </a>
+          <a href="#" class="account-nav-link" id="nav-logout-sidebar" data-logout>
+            <span>🚪</span> Cerrar sesión
+          </a>
+        </nav>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <main>
+        <!-- Tabs -->
+        <div style="display:flex;gap:0;border-bottom:2px solid var(--color-border);margin-bottom:var(--space-6);">
+          <button class="tab-btn active" data-panel="panel-orders"
+                  onclick="switchPanel('panel-orders', this)"
+                  style="padding:var(--space-3) var(--space-6);font-size:var(--text-sm);font-weight:600;
+                         color:var(--color-text-muted);border-bottom:2px solid transparent;
+                         margin-bottom:-2px;background:none;cursor:pointer;transition:all var(--transition-fast);">
+            📦 Mis pedidos
+          </button>
+          <button class="tab-btn" data-panel="panel-profile"
+                  onclick="switchPanel('panel-profile', this)"
+                  style="padding:var(--space-3) var(--space-6);font-size:var(--text-sm);font-weight:600;
+                         color:var(--color-text-muted);border-bottom:2px solid transparent;
+                         margin-bottom:-2px;background:none;cursor:pointer;transition:all var(--transition-fast);">
+            👤 Mi perfil
+          </button>
+        </div>
+
+        <!-- PANEL: PEDIDOS -->
+        <div id="panel-orders">
+          <div id="orders-list">
+            <!-- Se renderiza desde orders.js -->
+            <div class="skeleton" style="height:140px;border-radius:var(--radius-xl);margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:140px;border-radius:var(--radius-xl);margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:140px;border-radius:var(--radius-xl);"></div>
+          </div>
+        </div>
+
+        <!-- PANEL: PERFIL -->
+        <div id="panel-profile" style="display:none;">
+          <div style="background:white;border-radius:var(--radius-2xl);border:1px solid var(--color-border);
+                      padding:var(--space-8);">
+            <h3 style="margin-bottom:var(--space-6);">Información personal</h3>
+
+            <form id="profile-form" novalidate>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="profile-name">Nombre completo</label>
+                  <input type="text" id="profile-name" class="form-input" placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="profile-phone">Teléfono</label>
+                  <input type="tel" id="profile-phone" class="form-input" placeholder="+51 999 000 000">
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                  <label class="form-label" for="profile-address">Dirección de entrega frecuente</label>
+                  <textarea id="profile-address" class="form-textarea" rows="3"
+                            placeholder="Calle, número, distrito..."></textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div style="padding-bottom: var(--space-16);"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Cake<span>Sphere</span></div>
+          <p class="footer-desc">Pasteles artesanales premium para cada ocasión especial.</p>
+          <div class="footer-social"><a href="#">📷</a><a href="#">📘</a><a href="#">💬</a></div>
+        </div>
+        <div class="footer-col"><h4>Menú</h4><div class="footer-links"><a href="index.html">Inicio</a><a href="catalog.html">Catálogo</a></div></div>
+        <div class="footer-col"><h4>Mi cuenta</h4><div class="footer-links"><a href="orders.html">Mis pedidos</a></div></div>
+        <div class="footer-col"><h4>Contacto</h4><div class="footer-links"><a href="tel:+59178594895">📞 +591 78594895</a></div></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="footer-bottom"><p>© 2026 CakeSphere. Todos los derechos reservados. · <a href="admin/login.html" style="color:var(--color-text-muted);">Admin</a></p></div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/orders.js"></script>
+  <script>
+    // Switch entre paneles
+    function switchPanel(panelId, btn) {
+      document.querySelectorAll('[id^="panel-"]').forEach(p => p.style.display = 'none');
+      document.getElementById(panelId).style.display = 'block';
+      document.querySelectorAll('[data-panel]').forEach(b => {
+        b.style.color = 'var(--color-text-muted)';
+        b.style.borderBottomColor = 'transparent';
+      });
+      btn.style.color = 'var(--color-accent-gold)';
+      btn.style.borderBottomColor = 'var(--color-accent-gold)';
+    }
+
+    // Cargar datos del perfil en el formulario
+    async function loadProfileForm() {
+      const user = await getCurrentUser();
+      if (!user) return;
+      const profile = await getUserProfile();
+      if (!profile) return;
+      document.getElementById('profile-name').value    = profile.full_name || '';
+      document.getElementById('profile-phone').value   = profile.phone || '';
+      document.getElementById('profile-address').value = profile.address || '';
+    }
+
+    // Guardar perfil
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('[type="submit"]');
+      setButtonLoading(btn, true);
+      try {
+        await updateProfile({
+          full_name: document.getElementById('profile-name').value.trim(),
+          phone:     document.getElementById('profile-phone').value.trim(),
+          address:   document.getElementById('profile-address').value.trim()
+        });
+        showToast('¡Guardado!', 'Tu perfil fue actualizado.', 'success');
+      } catch(err) {
+        showToast('Error', err.message, 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfileForm();
+    });
+  </script>
+</body>
+</html>

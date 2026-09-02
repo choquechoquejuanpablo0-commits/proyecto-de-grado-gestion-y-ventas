@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos — CakeSphere Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <div class="admin-app">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <div class="admin-logo-text">Cake<span>Sphere</span></div>
+        <div class="admin-logo-badge">Panel Admin</div>
+      </div>
+      <nav class="admin-nav">
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Principal</div>
+          <a href="dashboard.html" class="admin-nav-link"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="orders.html"    class="admin-nav-link active"><span class="nav-icon">📦</span> Pedidos</a>
+          <a href="products.html"  class="admin-nav-link"><span class="nav-icon">🎂</span> Productos</a>
+          <a href="clients.html"   class="admin-nav-link"><span class="nav-icon">👥</span> Clientes</a>
+        </div>
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Tienda</div>
+          <a href="../index.html"   class="admin-nav-link" target="_blank"><span class="nav-icon">🛒</span> Ver tienda</a>
+          <a href="../catalog.html" class="admin-nav-link" target="_blank"><span class="nav-icon">📋</span> Ver catálogo</a>
+        </div>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-info">
+          <div class="admin-user-avatar">A</div>
+          <div>
+            <div class="admin-user-name">Administrador</div>
+            <div class="admin-user-role">CakeSphere</div>
+          </div>
+        </div>
+        <button class="admin-nav-link" data-logout style="width:100%;margin-top:8px;border:none;cursor:pointer;background:none;font-family:inherit;">
+          <span class="nav-icon">🚪</span> Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div class="admin-topbar-title">Gestión de Pedidos</div>
+        <div class="admin-topbar-right">
+          <button class="btn btn-ghost btn-sm" onclick="loadAdminOrders()">🔄 Actualizar</button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- Stats de pedidos -->
+        <div class="stats-grid" style="margin-bottom:var(--space-6);">
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Pendientes</div>
+              <div class="stat-card-value" id="orders-stat-pending" style="color:var(--color-warning);">—</div>
+            </div>
+            <div class="stat-card-icon stat-icon-orders">⏳</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">En preparación</div>
+              <div class="stat-card-value" id="orders-stat-prep">—</div>
+            </div>
+            <div class="stat-card-icon" style="background:#FEF9EE;color:#b8945a;">🍳</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Listos hoy</div>
+              <div class="stat-card-value" id="orders-stat-ready" style="color:var(--color-info);">—</div>
+            </div>
+            <div class="stat-card-icon stat-icon-products">✅</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Entregados hoy</div>
+              <div class="stat-card-value" id="orders-stat-delivered" style="color:var(--color-success);">—</div>
+            </div>
+            <div class="stat-card-icon stat-icon-clients">🎉</div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-5);">
+          <select id="order-status-filter" class="form-select" style="width:auto;font-size:var(--text-sm);"
+                  onchange="loadAdminOrders()">
+            <option value="all">Todos los estados</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="en_preparacion">En preparación</option>
+            <option value="listo">Listos</option>
+            <option value="entregado">Entregados</option>
+            <option value="cancelado">Cancelados</option>
+          </select>
+
+          <input type="date" id="order-date-filter" class="form-input"
+                 style="width:auto;font-size:var(--text-sm);"
+                 onchange="loadAdminOrders()">
+
+          <input type="text" id="order-search" class="form-input"
+                 style="width:200px;font-size:var(--text-sm);"
+                 placeholder="Buscar por número de orden..."
+                 oninput="debounceSearch()">
+
+          <button class="btn btn-ghost btn-sm" onclick="clearOrderFilters()">✕ Limpiar</button>
+        </div>
+
+        <!-- Tabla de pedidos -->
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <div class="admin-panel-title">Lista de pedidos</div>
+            <div id="orders-count" style="font-size:var(--text-sm);color:var(--color-text-muted);"></div>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table" id="admin-orders-table">
+              <thead>
+                <tr>
+                  <th>Número</th>
+                  <th>Cliente</th>
+                  <th>Ítems</th>
+                  <th>Total</th>
+                  <th>Entrega</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody">
+                <tr>
+                  <td colspan="7" style="text-align:center;padding:var(--space-8);">
+                    <div class="loader-spinner" style="margin:0 auto;"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalle de pedido -->
+  <div class="modal-overlay" id="order-detail-modal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <div class="modal-title">Detalle del pedido</div>
+        <button class="modal-close" onclick="closeModal('order-detail-modal')">✕</button>
+      </div>
+      <div id="order-detail-content">Cargando...</div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('order-detail-modal')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile toggle -->
+  <button class="admin-mobile-toggle" id="admin-mobile-toggle">☰</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/orders.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    // Cargar stats de pedidos
+    async function loadOrderStats() {
+      try {
+        const { data } = await _supabase.from('orders').select('status, created_at');
+        if (!data) return;
+        const today = new Date().toDateString();
+        const isToday = d => new Date(d).toDateString() === today;
+
+        document.getElementById('orders-stat-pending').textContent   = data.filter(o => o.status === 'pendiente').length;
+        document.getElementById('orders-stat-prep').textContent      = data.filter(o => o.status === 'en_preparacion').length;
+        document.getElementById('orders-stat-ready').textContent     = data.filter(o => o.status === 'listo' && isToday(o.created_at)).length;
+        document.getElementById('orders-stat-delivered').textContent = data.filter(o => o.status === 'entregado' && isToday(o.created_at)).length;
+      } catch(e) {}
+    }
+
+    let searchTimeout;
+    function debounceSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(loadAdminOrders, 400);
+    }
+
+    function clearOrderFilters() {
+      document.getElementById('order-status-filter').value = 'all';
+      document.getElementById('order-date-filter').value   = '';
+      document.getElementById('order-search').value        = '';
+      loadAdminOrders();
+    }
+
+    // Sobrescribir viewOrderDetail para usar el modal propio
+    async function viewOrderDetail(orderId) {
+      openModal('order-detail-modal');
+      const content = document.getElementById('order-detail-content');
+      content.innerHTML = '<div class="loader-spinner" style="margin:2rem auto;"></div>';
+
+      try {
+        const { data: order, error } = await _supabase
+          .from('orders')
+          .select('*, order_items(*)')
+          .eq('id', orderId)
+          .single();
+
+        if (error) throw error;
+
+        content.innerHTML = `
+          <div style="display:grid;gap:var(--space-4);">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+              <div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Número</div>
+                <div style="font-weight:700;color:var(--color-primary);">${order.order_number}</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Estado</div>
+                ${orderStatusBadge(order.status)}
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Cliente</div>
+                <div style="font-weight:500;">${order.customer_name}</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Teléfono</div>
+                <div>${order.customer_phone || '—'}</div>
+              </div>
+              <div style="grid-column:1/-1;">
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Dirección de entrega</div>
+                <div style="font-size:var(--text-sm);">${order.delivery_address}</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Fecha de entrega</div>
+                <div>${order.delivery_date ? formatDateTime(order.delivery_date) : 'Por coordinar'}</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Método de pago</div>
+                <div>${{efectivo:'💵 Efectivo',transferencia:'🏦 Transferencia',yape:'📱 Yape/Plin'}[order.payment_method] || order.payment_method}</div>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--color-border);padding-top:var(--space-4);">
+              <div style="font-weight:600;margin-bottom:var(--space-3);">Productos:</div>
+              ${(order.order_items || []).map(item => `
+                <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--color-border);">
+                  ${item.product_image ? `<img src="${item.product_image}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;">` : '<div style="width:40px;height:40px;border-radius:8px;background:var(--color-bg-section);display:flex;align-items:center;justify-content:center;">🎂</div>'}
+                  <div style="flex:1;">
+                    <div style="font-weight:500;font-size:var(--text-sm);">${item.product_name}</div>
+                    ${item.customizations ? `<div style="font-size:var(--text-xs);color:var(--color-text-muted);">${JSON.stringify(item.customizations).replace(/[{}",]/g,' ')}</div>` : ''}
+                  </div>
+                  <div style="font-size:var(--text-sm);">x${item.quantity}</div>
+                  <div style="font-weight:700;font-size:var(--text-sm);">${formatPrice(item.subtotal)}</div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-3);">
+              <div>
+                ${order.notes ? `<div style="font-size:var(--text-sm);color:var(--color-text-muted);"><strong>Notas:</strong> ${order.notes}</div>` : ''}
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:var(--text-sm);color:var(--color-text-muted);">Subtotal: ${formatPrice(order.subtotal)}</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-muted);">Envío: ${formatPrice(order.delivery_fee || 0)}</div>
+                <div style="font-family:var(--font-heading);font-size:var(--text-2xl);color:var(--color-primary);font-weight:700;">
+                  Total: ${formatPrice(order.total)}
+                </div>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--color-border);padding-top:var(--space-4);">
+              <label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:8px;">Actualizar estado:</label>
+              <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
+                ${['pendiente','en_preparacion','listo','entregado','cancelado'].map(s => `
+                  <button onclick="changeOrderStatus('${order.id}','${s}');closeModal('order-detail-modal');loadAdminOrders();loadOrderStats();"
+                          class="btn btn-sm ${order.status === s ? 'btn-primary' : 'btn-outline'}"
+                          style="font-size:var(--text-xs);">
+                    ${{pendiente:'⏳ Pendiente',en_preparacion:'🍳 En prep.',listo:'✅ Listo',entregado:'🎉 Entregado',cancelado:'✕ Cancelado'}[s]}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      } catch(err) {
+        content.innerHTML = `<p style="color:var(--color-error);">Error: ${err.message}</p>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadOrderStats);
+  </script>
+</body>
+</html>

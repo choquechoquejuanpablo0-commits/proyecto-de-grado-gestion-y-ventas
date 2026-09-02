@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" data-transparent="false">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link">Inicio</a>
+        <a href="catalog.html" class="navbar-link">Catálogo</a>
+        <a href="contact.html" class="navbar-link active">Contacto</a>
+        <a href="login.html"   class="navbar-link" id="nav-login">Iniciar sesión</a>
+        <a href="orders.html"  class="navbar-link" id="nav-profile" style="display:none;">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout style="display:none;">Cerrar sesión</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn">🛒<span class="cart-count" style="display:none;">0</span></a>
+        <button class="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="section-label">Estamos aquí para ti</div>
+      <h1 class="page-hero-title">Contáctanos</h1>
+      <p class="page-hero-sub">¿Tienes preguntas sobre tu pedido o quieres un diseño especial? Escríbenos.</p>
+    </div>
+  </div>
+
+  <!-- CONTACT LAYOUT -->
+  <div class="container">
+    <div class="contact-layout">
+
+      <!-- INFORMACIÓN DE CONTACTO -->
+      <div class="contact-info">
+        <div class="section-label" style="text-align:left;">Información</div>
+        <h2 style="text-align:left; margin-bottom:var(--space-6);">Hablemos</h2>
+
+        <p style="color:var(--color-text-muted); line-height:1.8; margin-bottom:var(--space-8);">
+          Ya sea que estés buscando un pastel personalizado para una boda, cumpleaños, aniversario o simplemente quieras darte un dulce gusto, estamos aquí para hacerlo realidad. 🎂✨
+
+          Creamos pasteles únicos, deliciosos y hechos especialmente para cada ocasión. **¡Déjanos ser parte de tus momentos especiales y contáctanos para crear el pastel perfecto para ti!**
+
+        </p>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div>
+            <div class="contact-item-label">Teléfono / WhatsApp</div>
+            <div class="contact-item-value">
+              <a href="https://wa.me/59178594895">+591 78594895</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div>
+            <div class="contact-item-label">Correo electrónico</div>
+            <div class="contact-item-value">
+              <a href="mailto:hola@cakesphere.com">hola@cakesphere.com</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div>
+            <div class="contact-item-label">Ubicación</div>
+            <div class="contact-item-value">warnes-satelite norte</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">🕐</div>
+          <div>
+            <div class="contact-item-label">Horario de atención</div>
+            <div class="contact-item-value">
+              Lunes a Sábado: 9:00 am – 9:00 pm<br>
+              Domingos: 9:00 am – 6:00 pm
+            </div>
+          </div>
+        </div>
+
+        <!-- Redes sociales -->
+        <div style="margin-top: var(--space-8);">
+          <div style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text);
+                      margin-bottom: var(--space-4);">Síguenos en redes</div>
+          <div style="display: flex; gap: var(--space-3);">
+            <a href="#" style="width:44px;height:44px;border-radius:var(--radius-lg);
+                               background:var(--color-bg-section);border:1px solid var(--color-border);
+                               display:flex;align-items:center;justify-content:center;
+                               font-size:1.2rem;transition:all var(--transition-fast);"
+               onmouseover="this.style.background='var(--color-accent-gold)'"
+               onmouseout="this.style.background='var(--color-bg-section)'">📷</a>
+            <a href="#" style="width:44px;height:44px;border-radius:var(--radius-lg);
+                               background:var(--color-bg-section);border:1px solid var(--color-border);
+                               display:flex;align-items:center;justify-content:center;
+                               font-size:1.2rem;transition:all var(--transition-fast);"
+               onmouseover="this.style.background='var(--color-accent-gold)'"
+               onmouseout="this.style.background='var(--color-bg-section)'">📘</a>
+            <a href="#" style="width:44px;height:44px;border-radius:var(--radius-lg);
+                               background:var(--color-bg-section);border:1px solid var(--color-border);
+                               display:flex;align-items:center;justify-content:center;
+                               font-size:1.2rem;transition:all var(--transition-fast);"
+               onmouseover="this.style.background='var(--color-accent-gold)'"
+               onmouseout="this.style.background='var(--color-bg-section)'">🎵</a>
+            <a href="https://wa.me/59178594895"
+               style="width:44px;height:44px;border-radius:var(--radius-lg);
+                      background:var(--color-bg-section);border:1px solid var(--color-border);
+                      display:flex;align-items:center;justify-content:center;
+                      font-size:1.2rem;transition:all var(--transition-fast);"
+               onmouseover="this.style.background='var(--color-accent-gold)'"
+               onmouseout="this.style.background='var(--color-bg-section)'">💬</a>
+          </div>
+        </div>
+
+        <!-- Mapa placeholder -->
+        <div class="contact-map-placeholder">
+          <span style="font-size:2rem;">📍</span>
+          <span>warnes, satelite norte — Entregamos a toda la ciudad</span>
+          <span style="font-size:var(--text-xs);">Pedidos con mínimo 48 horas de anticipación</span>
+        </div>
+      </div>
+
+      <!-- FORMULARIO DE CONTACTO -->
+      <div class="contact-form-card">
+        <h3 style="margin-bottom: var(--space-2);">Envíanos un mensaje</h3>
+        <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin-bottom: var(--space-6);">
+          Responderemos en menos de 24 horas hábiles.
+        </p>
+
+        <form id="contact-form" novalidate>
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="form-label" for="contact-name">Nombre <span class="required">*</span></label>
+              <input type="text" id="contact-name" class="form-input" placeholder="Tu nombre" required>
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-email">Email <span class="required">*</span></label>
+              <input type="email" id="contact-email" class="form-input" placeholder="tu@email.com" required>
+              <span class="form-error"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-phone">Teléfono</label>
+            <input type="tel" id="contact-phone" class="form-input" placeholder="+591 000 000 00">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-subject">Asunto <span class="required">*</span></label>
+            <select id="contact-subject" class="form-select" required>
+              <option value="">Selecciona un asunto...</option>
+              <option value="pedido">Consulta sobre un pedido</option>
+              <option value="personalizado">Pastel personalizado / corporativo</option>
+              <option value="precio">Cotización de precio</option>
+              <option value="distribucion">Distribución / Eventos</option>
+              <option value="otro">Otro</option>
+            </select>
+            <span class="form-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-message">Mensaje <span class="required">*</span></label>
+            <textarea
+              id="contact-message"
+              class="form-textarea"
+              placeholder="Cuéntanos qué necesitas. Por ejemplo: tipo de pastel, fecha de evento, número de porciones..."
+              rows="5"
+              required
+              minlength="10"
+            ></textarea>
+            <span class="form-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" id="contact-privacy" required>
+              <span class="form-check-label">
+                Acepto la <a href="#" style="color:var(--color-accent-gold);">Política de privacidad</a>
+                y el tratamiento de mis datos personales.
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            📨 Enviar mensaje
+          </button>
+        </form>
+
+        <!-- WhatsApp directo -->
+        <div style="margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--color-border);">
+          <div class="divider">
+            <span class="divider-icon">o</span>
+          </div>
+          <a href="https://wa.me/59178594895?text=Hola%20CakeSphere%2C%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre..."
+             class="btn btn-success btn-block" target="_blank">
+            💬 Escribir por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <section class="section-sm" style="background: var(--color-bg-section);">
+    <div class="container">
+      <h2 class="section-title">Preguntas frecuentes</h2>
+      <div style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-4);">
+
+        <details style="background:white;border-radius:var(--radius-xl);border:1px solid var(--color-border);
+                        padding:var(--space-5);cursor:pointer;">
+          <summary style="font-weight:600;color:var(--color-primary);list-style:none;
+                          display:flex;justify-content:space-between;align-items:center;">
+            ¿Con cuánto tiempo de anticipación debo pedir?
+            <span>›</span>
+          </summary>
+          <p style="margin-top:var(--space-3);color:var(--color-text-muted);font-size:var(--text-sm);line-height:1.7;">
+            Recomendamos al menos 48 horas de anticipación para pasteles estándar, y 72 horas o más para diseños elaborados o pedidos grandes.
+          </p>
+        </details>
+
+        <details style="background:white;border-radius:var(--radius-xl);border:1px solid var(--color-border);
+                        padding:var(--space-5);cursor:pointer;">
+          <summary style="font-weight:600;color:var(--color-primary);list-style:none;
+                          display:flex;justify-content:space-between;align-items:center;">
+            ¿Tienen opciones sin gluten o veganas?
+            <span>›</span>
+          </summary>
+          <p style="margin-top:var(--space-3);color:var(--color-text-muted);font-size:var(--text-sm);line-height:1.7;">
+            Sí, contamos con opciones sin gluten y veganas. Indícalo al momento de realizar tu pedido o escríbenos antes.
+          </p>
+        </details>
+
+        <details style="background:white;border-radius:var(--radius-xl);border:1px solid var(--color-border);
+                        padding:var(--space-5);cursor:pointer;">
+          <summary style="font-weight:600;color:var(--color-primary);list-style:none;
+                          display:flex;justify-content:space-between;align-items:center;">
+            ¿Hacen entregas fuera de satelite norte?
+            <span>›</span>
+          </summary>
+          <p style="margin-top:var(--space-3);color:var(--color-text-muted);font-size:var(--text-sm);line-height:1.7;">
+            Actualmente solo entregamos dentro de satelite norte. Estamos trabajando lo suficiente para dar una mejor experienxia al cliente.
+          </p>
+        </details>
+
+        <details style="background:white;border-radius:var(--radius-xl);border:1px solid var(--color-border);
+                        padding:var(--space-5);cursor:pointer;">
+          <summary style="font-weight:600;color:var(--color-primary);list-style:none;
+                          display:flex;justify-content:space-between;align-items:center;">
+            ¿Puedo cancelar o modificar mi pedido?
+            <span>›</span>
+          </summary>
+          <p style="margin-top:var(--space-3);color:var(--color-text-muted);font-size:var(--text-sm);line-height:1.7;">
+            Puedes cancelar o modificar tu pedido hasta 24 horas antes de la fecha de entrega pactada. Escríbenos al WhatsApp indicando tu número de orden.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Cake<span>Sphere</span></div>
+          <p class="footer-desc">Pasteles artesanales premium para cada ocasión especial.</p>
+          <div class="footer-social">
+            <a href="#">📷</a><a href="#">📘</a><a href="#">🎵</a><a href="#">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Menú</h4>
+          <div class="footer-links">
+            <a href="index.html">Inicio</a>
+            <a href="catalog.html">Catálogo</a>
+            <a href="contact.html">Contacto</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Mi cuenta</h4>
+          <div class="footer-links">
+            <a href="login.html">Iniciar sesión</a>
+            <a href="register.html">Registrarse</a>
+            <a href="orders.html">Mis pedidos</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <div class="footer-links">
+            <a href="tel:+59178594895">📞 +591 78594895</a>
+            <a href="mailto:hola@cakesphere.com">✉️ hola@cakesphere.com</a>
+            <a href="#">📍 warnes-satelite norte</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 CakeSphere. Todos los derechos reservados.</p>
+        <div style="display:flex;gap:var(--space-5);">
+          <a href="#">Política de privacidad</a>
+          <a href="#">Términos de uso</a>
+          <a href="admin/login.html">Admin</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    // Formulario de contacto
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validateForm(e.target)) return;
+
+      const btn = e.target.querySelector('[type="submit"]');
+      setButtonLoading(btn, true);
+
+      try {
+        const { error } = await _supabase.from('contact_messages').insert({
+          name:    document.getElementById('contact-name').value.trim(),
+          email:   document.getElementById('contact-email').value.trim(),
+          phone:   document.getElementById('contact-phone').value.trim(),
+          subject: document.getElementById('contact-subject').value,
+          message: document.getElementById('contact-message').value.trim()
+        });
+
+        if (error) throw error;
+
+        showToast('¡Mensaje enviado!', 'Te responderemos pronto. ¡Gracias!', 'success');
+        e.target.reset();
+      } catch (err) {
+        showToast('Error', err.message || 'No se pudo enviar el mensaje.', 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    });
+  </script>
+</body>
+</html>

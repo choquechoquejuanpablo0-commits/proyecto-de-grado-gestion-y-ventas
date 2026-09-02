@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CakeSphere — Pasteles artesanales premium con personalización a tu medida. Envío a domicilio.">
+  <titletr>Sweeix — Pasteles Premium Artesanales</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- Loader global -->
+  <div id="global-loader">
+    <div class="loader-logo">CakeSphere</div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" data-transparent="true">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link active">Inicio</a>
+        <a href="catalog.html" class="navbar-link">Catálogo</a>
+        <a href="contact.html" class="navbar-link">Contacto</a>
+        <a href="login.html"   class="navbar-link" id="nav-login">Iniciar sesión</a>
+        <a href="orders.html"  class="navbar-link" id="nav-profile" style="display:none;">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout style="display:none;">Cerrar sesión</a>
+      </div>
+
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn" title="Carrito">
+          🛒
+          <span class="cart-count" style="display:none;">0</span>
+        </a>
+        <button class="hamburger" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-shapes">
+      <div class="hero-shape hero-shape-1"></div>
+      <div class="hero-shape hero-shape-2"></div>
+      <div class="hero-shape hero-shape-3"></div>
+    </div>
+
+    <div class="hero-content container">
+      <div class="hero-grid">
+        <!-- Texto -->
+        <div class="hero-text">
+          <div class="hero-label">✨ Pasteles artesanales premium</div>
+          <h1 class="hero-title">
+            El pastel perfecto
+            <em>para cada momento</em>
+          </h1>
+          <p class="hero-desc">
+            Creamos pasteles únicos con ingredientes de primera calidad,
+            personalizados a tu gusto y entregados con amor en tu puerta.
+          </p>
+          <div class="hero-actions">
+            <a href="catalog.html" class="btn btn-gold btn-xl">Ver catálogo</a>
+            <a href="#about" class="btn btn-outline-gold btn-xl">Conoce más</a>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <div class="hero-stat-value">500+</div>
+              <div class="hero-stat-label">Clientes felices</div>
+            </div>
+            <div>
+              <div class="hero-stat-value">50+</div>
+              <div class="hero-stat-label">Sabores únicos</div>
+            </div>
+            <div>
+              <div class="hero-stat-value">5★</div>
+              <div class="hero-stat-label">Calificación promedio</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Imagen hero -->
+        <div class="hero-image-wrap">
+          <div class="hero-image-circle">
+            <img
+              src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop&crop=center"
+              alt="Pastel premium CakeSphere"
+              class="hero-main-img"
+              onerror="this.style.display='none'"
+            >
+          </div>
+
+          <!-- Tarjetas flotantes -->
+          <div class="hero-float-card card-rating">
+            <div class="float-card-icon">⭐</div>
+            <div class="float-card-info">
+              <div class="label">Calificación</div>
+              <div class="value">4.9 / 5.0</div>
+            </div>
+          </div>
+          <div class="hero-float-card card-order">
+            <div class="float-card-icon">🎂</div>
+            <div class="float-card-info">
+              <div class="label">Pedido listo</div>
+              <div class="value">¡En menos de una hora!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORÍAS ===== -->
+  <section class="section" style="background: var(--color-bg-section);">
+    <div class="container">
+      <div class="section-label">Explora</div>
+      <h2 class="section-title">Nuestras categorías</h2>
+      <p class="section-subtitle">
+        Desde pasteles de celebración hasta cupcakes personalizados, tenemos lo que buscas.
+      </p>
+
+      <div class="categories-grid">
+        <a href="catalog.html?cat=Pasteles" class="category-card">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=500&fit=crop" alt="Pasteles" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <div class="category-name">Pasteles</div>
+              <div class="category-count">Personalizable</div>
+            </div>
+          </div>
+        </a>
+        <a href="catalog.html?cat=Cheesecakes" class="category-card">
+          <img src="https://images.unsplash.com/photo-1702923406588-1183a9ae4713?w=400&h=500&fit=crop" alt="Cheesecakes" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <div class="category-name">Cheesecakes</div>
+              <div class="category-count">Cremosos</div>
+            </div>
+          </div>
+        </a>
+        <a href="catalog.html?cat=Cupcakes" class="category-card">
+          <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=500&fit=crop" alt="Cupcakes" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <div class="category-name">Cupcakes</div>
+              <div class="category-count">Por docena</div>
+            </div>
+          </div>
+        </a>
+        <a href="catalog.html?cat=Especiales" class="category-card">
+          <img src="https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=400&h=500&fit=crop" alt="Especiales" loading="lazy">
+          <div class="category-overlay">
+            <div>
+              <div class="category-name">Especiales</div>
+              <div class="category-count">Edición limitada</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCTOS DESTACADOS ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Lo más pedido</div>
+      <h2 class="section-title">Pasteles Destacados</h2>
+      <p class="section-subtitle">
+        Los favoritos de nuestros clientes, elaborados con los mejores ingredientes.
+      </p>
+
+      <div class="featured-grid" id="featured-grid">
+        <!-- Se carga dinámicamente desde Supabase -->
+        <div class="skeleton" style="height: 400px; border-radius: var(--radius-2xl);"></div>
+        <div class="skeleton" style="height: 400px; border-radius: var(--radius-2xl);"></div>
+        <div class="skeleton" style="height: 400px; border-radius: var(--radius-2xl);"></div>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--space-10);">
+        <a href="catalog.html" class="btn btn-outline btn-lg">Ver todos los pasteles</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SOBRE NOSOTROS ===== -->
+  <section class="section" id="about" style="background: var(--color-bg-section);">
+    <div class="container">
+      <div class="about-grid">
+        <!-- Imagen -->
+        <div class="about-image-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1516054575922-f0b8eeadec1a?w=600&h=750&fit=crop"
+            alt="Pastelería CakeSphere"
+            class="about-image-main"
+            loading="lazy"
+          >
+          <div class="about-image-badge" style="position:absolute;bottom:24px;left:-20px;">
+            <div class="about-badge-number">5+</div>
+            <div class="about-badge-text">Años de<br>experiencia</div>
+          </div>
+        </div>
+
+        <!-- Texto -->
+        <div class="about-content">
+          <div class="section-label" style="text-align:left;">Nuestra historia</div>
+          <h2 style="text-align:left;margin-bottom:var(--space-5);">
+            Hechos con pasión, entregados con amor
+          </h2>
+          <p style="color:var(--color-text-muted);line-height:1.8;margin-bottom:var(--space-4);">
+            En CakeSphere, cada pastel nace de un mismo compromiso: convertir un ingrediente sencillo en un momento inolvidable. Empezamos por amor a la repostería fina, y hoy ese mismo cuidado artesanal está en cada pedido que preparamos, 
+            pensado para que tu celebración salga exactamente como la imaginaste.
+          </p>
+          <p style="color:var(--color-text-muted);line-height:1.8;margin-bottom:var(--space-8);">
+            Usamos ingredientes naturales, sin conservantes artificiales, y personalizamos
+            cada creación para que sea exactamente lo que soñaste.
+          </p>
+
+          <div class="about-features">
+            <div class="about-feature">
+              <div class="about-feature-icon">🌿</div>
+              <div class="about-feature-text">
+                <strong>Ingredientes naturales</strong>
+                <span>Sin conservantes, sin artificiales</span>
+              </div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">✏️</div>
+              <div class="about-feature-text">
+                <strong>100% personalizable</strong>
+                <span>A tu gusto y medida</span>
+              </div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">🚚</div>
+              <div class="about-feature-text">
+                <strong>Envío a domicilio</strong>
+                <span>Puntual y seguro</span>
+              </div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">❤️</div>
+              <div class="about-feature-text">
+                <strong>Hecho con amor</strong>
+                <span>Cada detalle importa</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--space-8);">
+            <a href="contact.html" class="btn btn-primary btn-lg">Contáctanos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROCESO ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Simple y rápido</div>
+      <h2 class="section-title">¿Cómo funciona?</h2>
+      <p class="section-subtitle">Pedir tu pastel favorito nunca fue tan fácil.</p>
+
+      <div class="grid grid-4">
+        <div style="text-align:center;padding:var(--space-6);">
+          <div style="width:64px;height:64px;background:rgba(201,169,110,0.12);border-radius:50%;
+                      display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);
+                      font-size:1.8rem;">🔍</div>
+          <div style="font-weight:700;font-size:var(--text-xs);color:var(--color-accent-gold);
+                      text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2);">Paso 1</div>
+          <h4 style="margin-bottom:var(--space-2);">Elige tu pastel</h4>
+          <p style="color:var(--color-text-muted);font-size:var(--text-sm);">Explora nuestro catálogo y encuentra el pastel ideal.</p>
+        </div>
+        <div style="text-align:center;padding:var(--space-6);">
+          <div style="width:64px;height:64px;background:rgba(232,196,216,0.3);border-radius:50%;
+                      display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);
+                      font-size:1.8rem;">✏️</div>
+          <div style="font-weight:700;font-size:var(--text-xs);color:var(--color-accent-gold);
+                      text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2);">Paso 2</div>
+          <h4 style="margin-bottom:var(--space-2);">Personalízalo</h4>
+          <p style="color:var(--color-text-muted);font-size:var(--text-sm);">Elige sabor, tamaño, decoración y tu mensaje especial.</p>
+        </div>
+        <div style="text-align:center;padding:var(--space-6);">
+          <div style="width:64px;height:64px;background:rgba(26,10,46,0.06);border-radius:50%;
+                      display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);
+                      font-size:1.8rem;">💳</div>
+          <div style="font-weight:700;font-size:var(--text-xs);color:var(--color-accent-gold);
+                      text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2);">Paso 3</div>
+          <h4 style="margin-bottom:var(--space-2);">Realiza tu pedido</h4>
+          <p style="color:var(--color-text-muted);font-size:var(--text-sm);">Completa tu información y confirma el pedido fácilmente.</p>
+        </div>
+        <div style="text-align:center;padding:var(--space-6);">
+          <div style="width:64px;height:64px;background:rgba(76,175,135,0.12);border-radius:50%;
+                      display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);
+                      font-size:1.8rem;">🚚</div>
+          <div style="font-weight:700;font-size:var(--text-xs);color:var(--color-accent-gold);
+                      text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2);">Paso 4</div>
+          <h4 style="margin-bottom:var(--space-2);">¡Recíbelo en casa!</h4>
+          <p style="color:var(--color-text-muted);font-size:var(--text-sm);">Te lo llevamos fresco y perfecto a donde nos indiques.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIOS ===== -->
+  <section class="section" style="background: var(--color-bg-section);">
+    <div class="container">
+      <div class="section-label">Lo que dicen</div>
+      <h2 class="section-title">Clientes que nos aman</h2>
+      <p class="section-subtitle">
+        La satisfacción de nuestros clientes es nuestra mejor recompensa.
+      </p>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">
+            "El pastel de bodas que nos hicieron superó todas nuestras expectativas.
+            Hermoso, delicioso y entregado perfectamente a tiempo.100% recomendado"
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar-placeholder">M</div>
+            <div>
+              <div class="testimonial-name">María García</div>
+              <div class="testimonial-role">Boda · Marzo 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">
+            "Pedí un pastel de cumpleaños para mi hijo con diseño de cohetes y
+            quedó increíble. Mi hijo estaba emocionadísimo. ¡Gracias CakeSphere!"
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar-placeholder">C</div>
+            <div>
+              <div class="testimonial-name">Carlos Mendoza</div>
+              <div class="testimonial-role">Cumpleaños · Enero 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">
+            "La cheesecake de fresas fue la estrella de nuestra reunión.
+            Todos preguntaban dónde la habíamos comprado. ¡Volveré a pedir siempre!"
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar-placeholder">L</div>
+            <div>
+              <div class="testimonial-name">Lucía Fernández</div>
+              <div class="testimonial-role">Evento · Febrero 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner">
+        <h2>¿Lista/o para el pastel de tus sueños?</h2>
+        <p>
+          Personaliza cada detalle y sorprende a alguien especial.
+          Pedidos con al menos 48 horas de anticipación.
+        </p>
+        <div class="cta-banner-actions">
+          <a href="catalog.html" class="btn btn-gold btn-xl">Ordenar ahora</a>
+          <a href="contact.html" class="btn btn-outline-gold btn-xl">Preguntar por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Cake<span>Sphere</span></div>
+          <p class="footer-desc">
+            Pasteles artesanales premium elaborados con ingredientes naturales
+            y personalizados para cada ocasión especial.
+          </p>
+          <div class="footer-social">
+            <a href="#" title="Instagram">📷</a>
+            <a href="#" title="Facebook">📘</a>
+            <a href="#" title="TikTok">🎵</a>
+            <a href="#" title="WhatsApp">💬</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Menú</h4>
+          <div class="footer-links">
+            <a href="index.html">Inicio</a>
+            <a href="catalog.html">Catálogo</a>
+            <a href="cart.html">Carrito</a>
+            <a href="contact.html">Contacto</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Mi cuenta</h4>
+          <div class="footer-links">
+            <a href="login.html">Iniciar sesión</a>
+            <a href="register.html">Registrarse</a>
+            <a href="orders.html">Mis pedidos</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <div class="footer-links">
+            <a href="tel:+59178594895">📞 +591 78594895</a>
+            <a href="mailto:hola@cakesphere.com">✉️ hola@cakesphere.com</a>
+            <a href="#">📍 SANTA CRUZ-BOLIVIA</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 CakeSphere. Todos los derechos reservados.</p>
+        <div style="display:flex;gap:var(--space-5);">
+          <a href="#">Política de privacidad</a>
+          <a href="#">Términos de uso</a>
+          <a href="admin/login.html">Admin</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>

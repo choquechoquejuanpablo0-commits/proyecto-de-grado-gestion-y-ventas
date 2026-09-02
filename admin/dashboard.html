@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — CakeSphere Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <div class="admin-app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <div class="admin-logo-text">Cake<span>Sphere</span></div>
+        <div class="admin-logo-badge">Panel Admin</div>
+      </div>
+
+      <nav class="admin-nav">
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Principal</div>
+          <a href="dashboard.html" class="admin-nav-link active">
+            <span class="nav-icon">📊</span> Dashboard
+          </a>
+          <a href="orders.html" class="admin-nav-link">
+            <span class="nav-icon">📦</span> Pedidos
+            <span class="nav-badge" id="pending-badge">0</span>
+          </a>
+          <a href="products.html" class="admin-nav-link">
+            <span class="nav-icon">🎂</span> Productos
+          </a>
+          <a href="clients.html" class="admin-nav-link">
+            <span class="nav-icon">👥</span> Clientes
+          </a>
+        </div>
+
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Tienda</div>
+          <a href="../index.html" class="admin-nav-link" target="_blank">
+            <span class="nav-icon">🛒</span> Ver tienda
+          </a>
+          <a href="../catalog.html" class="admin-nav-link" target="_blank">
+            <span class="nav-icon">📋</span> Ver catálogo
+          </a>
+        </div>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-info">
+          <div class="admin-user-avatar">A</div>
+          <div>
+            <div class="admin-user-name">Administrador</div>
+            <div class="admin-user-role">CakeSphere</div>
+          </div>
+        </div>
+        <button class="admin-nav-link" data-logout style="width:100%;margin-top:8px;border:none;cursor:pointer;background:none;font-family:inherit;">
+          <span class="nav-icon">🚪</span> Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <div class="admin-main">
+
+      <!-- Topbar -->
+      <div class="admin-topbar">
+        <div class="admin-topbar-title">Dashboard</div>
+        <div class="admin-topbar-right">
+          <div class="admin-search">
+            <span>🔍</span>
+            <input type="text" placeholder="Buscar pedido, producto...">
+          </div>
+          <div style="font-size:var(--text-sm);color:var(--color-text-muted);" id="current-date"></div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="admin-content">
+
+        <!-- Bienvenida -->
+        <div style="margin-bottom:var(--space-6);">
+          <h2 style="font-family:var(--font-heading);color:var(--color-primary);">
+            ¡Buenos días! 👋
+          </h2>
+          <p style="color:var(--color-text-muted);font-size:var(--text-sm);">
+            Aquí tienes un resumen del día de hoy.
+          </p>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Ventas hoy</div>
+              <div class="stat-card-value" id="stat-today-sales">—</div>
+              <div class="stat-card-change up">↑ Actualizado</div>
+            </div>
+            <div class="stat-card-icon stat-icon-sales">💰</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Pedidos del mes</div>
+              <div class="stat-card-value" id="stat-month-orders">—</div>
+              <div class="stat-card-change up">↑ Este mes</div>
+            </div>
+            <div class="stat-card-icon stat-icon-orders">📦</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Pendientes</div>
+              <div class="stat-card-value" id="stat-pending">—</div>
+              <div class="stat-card-change" style="color:var(--color-warning);">⚠ Por atender</div>
+            </div>
+            <div class="stat-card-icon stat-icon-orders">⏳</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Clientes totales</div>
+              <div class="stat-card-value" id="stat-clients">—</div>
+              <div class="stat-card-change up">↑ Registrados</div>
+            </div>
+            <div class="stat-card-icon stat-icon-clients">👥</div>
+          </div>
+        </div>
+
+        <!-- Segunda fila de stats -->
+        <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:var(--space-6);">
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Ventas del mes</div>
+              <div class="stat-card-value" id="stat-month-sales">—</div>
+            </div>
+            <div class="stat-card-icon stat-icon-sales">📈</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Productos en catálogo</div>
+              <div class="stat-card-value" id="stat-products">—</div>
+            </div>
+            <div class="stat-card-icon stat-icon-products">🎂</div>
+          </div>
+        </div>
+
+        <!-- CHARTS GRID -->
+        <div class="chart-grid">
+          <!-- Últimos pedidos -->
+          <div class="chart-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-5);">
+              <div class="chart-card-title">Pedidos recientes</div>
+              <a href="orders.html" class="btn btn-ghost btn-sm">Ver todos →</a>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-tbody">
+                  <tr>
+                    <td colspan="5" style="text-align:center;color:var(--color-text-muted);">
+                      <div class="loader-spinner" style="margin:var(--space-4) auto;"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top productos -->
+          <div class="chart-card">
+            <div class="chart-card-title">Más vendidos</div>
+            <div id="top-products-list">
+              <div class="skeleton" style="height:50px;border-radius:var(--radius-lg);margin-bottom:8px;"></div>
+              <div class="skeleton" style="height:50px;border-radius:var(--radius-lg);margin-bottom:8px;"></div>
+              <div class="skeleton" style="height:50px;border-radius:var(--radius-lg);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div style="background:white;border-radius:var(--radius-xl);border:1px solid #E8ECF0;padding:var(--space-6);">
+          <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-5);">⚡ Acciones rápidas</h3>
+          <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
+            <a href="products.html" class="btn btn-primary">+ Agregar producto</a>
+            <a href="orders.html"   class="btn btn-outline">Ver pedidos pendientes</a>
+            <a href="clients.html"  class="btn btn-ghost">Ver clientes</a>
+            <a href="../catalog.html" class="btn btn-ghost" target="_blank">Ver catálogo público</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile toggle -->
+  <button class="admin-mobile-toggle" id="admin-mobile-toggle">☰</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="../js/orders.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    // Fecha actual
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-PE', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    // Cargar badge de pendientes
+    async function loadPendingBadge() {
+      try {
+        const { count } = await _supabase
+          .from('orders')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pendiente');
+        const badge = document.getElementById('pending-badge');
+        if (badge) {
+          badge.textContent = count || 0;
+          badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+      } catch(e) {}
+    }
+    document.addEventListener('DOMContentLoaded', loadPendingBadge);
+  </script>
+</body>
+</html>

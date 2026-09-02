@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link">Inicio</a>
+        <a href="catalog.html" class="navbar-link">Catálogo</a>
+        <a href="login.html"   class="navbar-link" id="nav-login">Iniciar sesión</a>
+        <a href="orders.html"  class="navbar-link" id="nav-profile" style="display:none;">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout style="display:none;">Cerrar sesión</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn">🛒<span class="cart-count" style="display:none;">0</span></a>
+        <button class="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <h1 class="page-hero-title">Finalizar Pedido</h1>
+      <p class="page-hero-sub">Solo unos pasos más para que tu pastel esté en camino</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- STEPS -->
+    <div class="checkout-steps" style="margin:var(--space-8) 0;">
+      <div class="checkout-step done">
+        <div class="step-circle">✓</div>
+        <div class="step-label">Carrito</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="checkout-step active">
+        <div class="step-circle">2</div>
+        <div class="step-label">Datos del pedido</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="checkout-step">
+        <div class="step-circle">3</div>
+        <div class="step-label">Confirmación</div>
+      </div>
+    </div>
+
+    <!-- FORM + SUMMARY -->
+    <div class="checkout-layout">
+
+      <!-- FORMULARIO -->
+      <form id="checkout-form" novalidate>
+
+        <!-- DATOS DEL CLIENTE -->
+        <div class="checkout-card">
+          <div class="checkout-card-title">
+            <div class="step-num">1</div>
+            Datos del cliente
+          </div>
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="form-label" for="customer-name">Nombre completo <span class="required">*</span></label>
+              <input type="text" id="customer-name" class="form-input" placeholder="Tu nombre" required>
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="customer-phone">Teléfono / WhatsApp <span class="required">*</span></label>
+              <input type="tel" id="customer-phone" class="form-input" placeholder="+591 999 000 00" required>
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="customer-email">Email</label>
+              <input type="email" id="customer-email" class="form-input" placeholder="tu@email.com">
+              <span class="form-hint">Para enviarte la confirmación del pedido.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIRECCIÓN DE ENTREGA -->
+        <div class="checkout-card">
+          <div class="checkout-card-title">
+            <div class="step-num">2</div>
+            Dirección de entrega
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="delivery-address">Dirección completa <span class="required">*</span></label>
+            <textarea
+              id="delivery-address"
+              class="form-textarea"
+              placeholder="Calle, número, distrito, referencias..."
+              rows="3"
+              required
+            ></textarea>
+            <span class="form-error"></span>
+          </div>
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="form-label" for="delivery-date">Fecha de entrega deseada <span class="required">*</span></label>
+              <input type="datetime-local" id="delivery-date" class="form-input" required>
+              <span class="form-hint">Mínimo 48 horas de anticipación.</span>
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="order-notes">Notas adicionales</label>
+              <input type="text" id="order-notes" class="form-input" placeholder="Alergias, instrucciones especiales...">
+            </div>
+          </div>
+        </div>
+
+        <!-- MÉTODO DE PAGO -->
+        <div class="checkout-card">
+          <div class="checkout-card-title">
+            <div class="step-num">3</div>
+            Método de pago
+          </div>
+          <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-5);">
+            El pago se realiza al momento de la entrega o mediante transferencia.
+          </p>
+          <div class="payment-methods">
+            <label class="payment-option selected">
+              <input type="radio" name="payment" value="efectivo" checked>
+              <div class="payment-icon">💵</div>
+              <div class="payment-label">Efectivo</div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="transferencia">
+              <div class="payment-icon">🏦</div>
+              <div class="payment-label">Transferencia</div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="yape">
+              <div class="payment-icon">📱</div>
+              <div class="payment-label">Yape / Plin</div>
+            </label>
+          </div>
+
+          <!-- Info transferencia -->
+          <div id="bank-info" style="margin-top:var(--space-5);padding:var(--space-4);
+               background:var(--color-bg-section);border-radius:var(--radius-lg);
+               font-size:var(--text-sm);color:var(--color-text-muted);display:none;">
+            <strong>Datos para transferencia:</strong><br>
+            BCP — Cuenta de ahorros: 123-45678901-0-12<br>
+            A nombre de: CakeSphere S.A.C.<br>
+            Enviar voucher por WhatsApp al: +591 78594895
+          </div>
+        </div>
+
+        <!-- BOTÓN CONFIRMAR -->
+        <button type="submit" class="btn btn-gold btn-xl btn-block">
+          🎂 Confirmar pedido
+        </button>
+
+        <p style="text-align:center;font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-4);">
+          Al confirmar, aceptas nuestros <a href="#" style="color:var(--color-accent-gold);">Términos y condiciones</a>
+          y la <a href="#" style="color:var(--color-accent-gold);">Política de privacidad</a>.
+        </p>
+      </form>
+
+      <!-- RESUMEN DEL PEDIDO -->
+      <div>
+        <div class="cart-summary">
+          <div class="cart-summary-title">🧾 Tu pedido</div>
+
+          <!-- Items del carrito -->
+          <div id="checkout-items" style="margin-bottom:var(--space-5);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border);">
+            <!-- Se renderiza desde cart.js -->
+          </div>
+
+          <div class="cart-summary-row">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">—</span>
+          </div>
+          <div class="cart-summary-row">
+            <span>Envío</span>
+            <span id="cart-delivery">—</span>
+          </div>
+          <div class="cart-summary-total">
+            <span class="label">Total</span>
+            <span class="amount" id="cart-total">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding-bottom:var(--space-16);"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/orders.js"></script>
+  <script>
+    // Mostrar/ocultar info bancaria según método de pago
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fecha mínima (48 horas desde ahora)
+      const minDate = new Date(Date.now() + 48 * 60 * 60 * 1000);
+      const dateInput = document.getElementById('delivery-date');
+      if (dateInput) {
+        dateInput.min = minDate.toISOString().slice(0, 16);
+      }
+
+      // Toggle info bancaria
+      document.querySelectorAll('.payment-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const val = opt.querySelector('input')?.value;
+          const bankInfo = document.getElementById('bank-info');
+          if (bankInfo) bankInfo.style.display = val === 'transferencia' ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader">
+    <div class="loader-logo">CakeSphere</div>
+    <div class="loader-spinner"></div>
+  </div>
+  <div id="toast-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" data-transparent="false">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link">Inicio</a>
+        <a href="catalog.html" class="navbar-link active">Catálogo</a>
+        <a href="contact.html" class="navbar-link">Contacto</a>
+        <a href="login.html"   class="navbar-link" id="nav-login">Iniciar sesión</a>
+        <a href="orders.html"  class="navbar-link" id="nav-profile" style="display:none;">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout style="display:none;">Cerrar sesión</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn">🛒<span class="cart-count" style="display:none;">0</span></a>
+        <button class="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO PEQUEÑO -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="section-label">Explorar</div>
+      <h1 class="page-hero-title">Nuestro Catálogo</h1>
+      <p class="page-hero-sub">Encuentra el pastel perfecto para cada ocasión especial</p>
+    </div>
+  </div>
+
+  <!-- CATALOG LAYOUT -->
+  <div class="container">
+    <div class="catalog-layout">
+
+      <!-- SIDEBAR FILTROS -->
+      <aside class="catalog-sidebar">
+        <div class="filter-title">🔍 Filtros</div>
+
+        <!-- Búsqueda -->
+        <div class="filter-section">
+          <div class="filter-section-title">Buscar</div>
+          <input
+            type="search"
+            id="search-input"
+            class="form-input"
+            placeholder="Ej: chocolate, fresas..."
+          >
+        </div>
+
+        <!-- Categoría -->
+        <div class="filter-section">
+          <div class="filter-section-title">Categoría</div>
+          <div class="filter-chip-group">
+            <button class="filter-chip active" data-category="all">Todos</button>
+            <button class="filter-chip" data-category="Pasteles">Pasteles</button>
+            <button class="filter-chip" data-category="Cheesecakes">Cheesecakes</button>
+            <button class="filter-chip" data-category="Cupcakes">Cupcakes</button>
+            <button class="filter-chip" data-category="Especiales">Especiales</button>
+          </div>
+        </div>
+
+        <!-- Precio -->
+        <div class="filter-section">
+          <div class="filter-section-title">Rango de precio</div>
+          <div class="price-range">
+            <input type="number" id="price-min" placeholder="Mín" min="0">
+            <input type="number" id="price-max" placeholder="Máx" min="0">
+          </div>
+        </div>
+
+        <!-- Disponibilidad -->
+        <div class="filter-section">
+          <div class="filter-section-title">Disponibilidad</div>
+          <div class="filter-chip-group">
+            <button class="filter-chip active" data-avail="all">Todos</button>
+            <button class="filter-chip" data-avail="available">En stock</button>
+          </div>
+        </div>
+
+        <button id="clear-filters" class="btn btn-ghost btn-sm btn-block" style="margin-top:var(--space-4);">
+          ✕ Limpiar filtros
+        </button>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main class="catalog-main">
+        <!-- Toolbar -->
+        <div class="catalog-toolbar">
+          <div class="catalog-count" id="products-count">Cargando...</div>
+          <div class="catalog-sort">
+            <label for="sort-select">Ordenar:</label>
+            <select id="sort-select" class="form-select" style="width:auto;padding:0.5rem 2rem 0.5rem 0.75rem;">
+              <option value="default">Más recientes</option>
+              <option value="price_asc">Precio: menor a mayor</option>
+              <option value="price_desc">Precio: mayor a menor</option>
+              <option value="name_asc">Nombre A-Z</option>
+              <option value="featured">Destacados primero</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grid de productos -->
+        <div class="products-grid" id="products-grid">
+          <!-- Se carga desde products.js -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Cake<span>Sphere</span></div>
+          <p class="footer-desc">Pasteles artesanales premium para cada ocasión especial.</p>
+          <div class="footer-social">
+            <a href="#" title="Instagram">📷</a>
+            <a href="#" title="Facebook">📘</a>
+            <a href="#" title="WhatsApp">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Menú</h4>
+          <div class="footer-links">
+            <a href="index.html">Inicio</a>
+            <a href="catalog.html">Catálogo</a>
+            <a href="contact.html">Contacto</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Mi cuenta</h4>
+          <div class="footer-links">
+            <a href="login.html">Iniciar sesión</a>
+            <a href="register.html">Registrarse</a>
+            <a href="orders.html">Mis pedidos</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <div class="footer-links">
+            <a href="tel:+59178594895">📞 +591 78594895</a>
+            <a href="mailto:hola@cakesphere.com">✉️ hola@cakesphere.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 CakeSphere. Todos los derechos reservados. · <a href="admin/login.html" style="color:var(--color-text-muted);">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    // Leer categoría desde URL
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('cat');
+      if (cat) {
+        const chip = document.querySelector(`.filter-chip[data-category="${cat}"]`);
+        if (chip) {
+          document.querySelectorAll('.filter-chip[data-category]').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

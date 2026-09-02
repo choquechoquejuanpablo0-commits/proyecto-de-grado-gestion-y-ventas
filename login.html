@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <div class="auth-page">
+
+    <!-- LADO VISUAL -->
+    <div class="auth-visual">
+      <a href="index.html" class="auth-visual-logo">Cake<span>Sphere</span></a>
+      <p class="auth-visual-text">
+        El pastel perfecto para cada momento especial.
+        Inicia sesión y disfruta de todos nuestros beneficios.
+      </p>
+      <img
+        src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&h=500&fit=crop&crop=center"
+        alt="Pasteles CakeSphere"
+        class="auth-visual-image"
+        onerror="this.style.display='none'"
+      >
+
+      <!-- Beneficios -->
+      <div style="margin-top: var(--space-8); display: flex; flex-direction: column; gap: var(--space-3);
+                  position: relative; z-index: 1; text-align: left; width: 100%; max-width: 340px;">
+        <div style="display:flex;gap:var(--space-3);align-items:center;">
+          <span style="width:32px;height:32px;background:rgba(201,169,110,0.2);border-radius:50%;
+                       display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</span>
+          <span style="font-size:var(--text-sm);color:rgba(255,255,255,0.8);">Historial de pedidos guardado</span>
+        </div>
+        <div style="display:flex;gap:var(--space-3);align-items:center;">
+          <span style="width:32px;height:32px;background:rgba(201,169,110,0.2);border-radius:50%;
+                       display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</span>
+          <span style="font-size:var(--text-sm);color:rgba(255,255,255,0.8);">Datos autocompletados en checkout</span>
+        </div>
+        <div style="display:flex;gap:var(--space-3);align-items:center;">
+          <span style="width:32px;height:32px;background:rgba(201,169,110,0.2);border-radius:50%;
+                       display:flex;align-items:center;justify-content:center;flex-shrink:0;">✓</span>
+          <span style="font-size:var(--text-sm);color:rgba(255,255,255,0.8);">Seguimiento en tiempo real</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="auth-form-side">
+      <div class="auth-form-wrap">
+        <!-- Logo mobile -->
+        <div style="display:none;text-align:center;margin-bottom:var(--space-8);" class="auth-mobile-logo">
+          <a href="index.html" style="font-family:var(--font-heading);font-size:var(--text-3xl);
+                                      font-style:italic;font-weight:700;color:var(--color-primary);">
+            Cake<span style="color:var(--color-accent-gold);">Sphere</span>
+          </a>
+        </div>
+
+        <h1 class="auth-form-title">¡Bienvenido de vuelta!</h1>
+        <p class="auth-form-sub">Inicia sesión en tu cuenta para continuar.</p>
+
+        <!-- Mensaje si viene de registro -->
+        <div id="registered-msg" style="display:none; background: #e8f7f1; border: 1px solid var(--color-success);
+             border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-5);
+             font-size: var(--text-sm); color: #2d7a54;">
+          ✅ ¡Cuenta creada! Revisa tu email para confirmar y luego inicia sesión.
+        </div>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Correo electrónico <span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="tu@email.com"
+              autocomplete="email"
+              required
+            >
+            <span class="form-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">
+              Contraseña <span class="required">*</span>
+              <a href="#" style="float:right;font-size:var(--text-xs);color:var(--color-accent-gold);font-weight:500;">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </label>
+            <div style="position:relative;">
+              <input
+                type="password"
+                id="password"
+                class="form-input"
+                placeholder="Tu contraseña"
+                autocomplete="current-password"
+                required
+                minlength="6"
+              >
+              <button type="button"
+                      style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                             background:none;border:none;cursor:pointer;font-size:1rem;
+                             color:var(--color-text-light);"
+                      onclick="togglePassword('password', this)">👁</button>
+            </div>
+            <span class="form-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" id="remember">
+              <span class="form-check-label">Recordarme en este dispositivo</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            Iniciar sesión
+          </button>
+        </form>
+
+        <div class="divider" style="margin: var(--space-6) 0;">
+          <span style="color:var(--color-text-muted);font-size:var(--text-sm);">¿No tienes cuenta?</span>
+        </div>
+
+        <a href="register.html" class="btn btn-outline btn-lg btn-block">
+          Crear cuenta gratis
+        </a>
+
+        <p style="text-align:center; margin-top: var(--space-5); font-size: var(--text-xs); color: var(--color-text-muted);">
+          ¿Eres administrador?
+          <a href="admin/login.html" style="color: var(--color-accent-gold);">Panel de admin →</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    // Mostrar mensaje de registro exitoso
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('registered') === '1') {
+      document.getElementById('registered-msg').style.display = 'block';
+    }
+
+    // Mostrar logo en mobile
+    if (window.innerWidth <= 768) {
+      document.querySelector('.auth-mobile-logo').style.display = 'block';
+    }
+
+    // Toggle visibilidad de contraseña
+    function togglePassword(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+      }
+    }
+
+    // Redirigir si ya está logueado
+    getCurrentUser().then(user => {
+      if (user && user.email !== ADMIN_EMAIL) {
+        const redirect = params.get('redirect');
+        if (redirect) window.location.href = decodeURIComponent(redirect);
+        else window.location.href = 'index.html';
+      }
+    }).catch(() => {});
+  </script>
+</body>
+</html>

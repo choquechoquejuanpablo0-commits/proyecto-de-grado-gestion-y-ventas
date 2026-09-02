@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Producto — CakeSphere</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" data-transparent="false">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-logo">Cake<span>Sphere</span></a>
+      <div class="navbar-links">
+        <a href="index.html"   class="navbar-link">Inicio</a>
+        <a href="catalog.html" class="navbar-link">Catálogo</a>
+        <a href="contact.html" class="navbar-link">Contacto</a>
+        <a href="login.html"   class="navbar-link" id="nav-login">Iniciar sesión</a>
+        <a href="orders.html"  class="navbar-link" id="nav-profile" style="display:none;">Mi cuenta</a>
+        <a href="#" class="navbar-link" id="nav-logout" data-logout style="display:none;">Cerrar sesión</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="cart.html" class="navbar-icon-btn">🛒<span class="cart-count" style="display:none;">0</span></a>
+        <button class="hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="container" style="padding-top: calc(var(--navbar-height) + 16px);">
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="catalog.html">Catálogo</a>
+      <span class="breadcrumb-sep">›</span>
+      <span id="breadcrumb-product">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL -->
+  <div class="container" id="product-detail-area">
+    <div class="product-detail-layout">
+
+      <!-- GALERÍA -->
+      <div class="product-gallery">
+        <div class="product-main-img-wrap">
+          <img id="product-main-img" src="" alt="Producto" class="product-main-img"
+               onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect fill=\'%23F5F0EA\' width=\'400\' height=\'400\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'100\' fill=\'%23C9A96E\' opacity=\'0.4\'%3E🎂%3C/text%3E%3C/svg%3E'">
+        </div>
+        <div class="product-thumbnails" id="product-thumbnails"></div>
+      </div>
+
+      <!-- INFORMACIÓN -->
+      <div class="product-info">
+        <div class="product-category-tag" id="product-category">—</div>
+        <h1 class="product-title" id="product-title">Cargando...</h1>
+
+        <div class="product-rating-row">
+          <div class="stars">★★★★★</div>
+          <span class="product-rating-count">(4.9 · 23 reseñas)</span>
+          <div id="product-stock"></div>
+        </div>
+
+        <div class="product-price-row">
+          <div>
+            <div class="product-price-base">Precio total</div>
+            <div class="product-price" id="current-price">—</div>
+            <div class="product-price-note">* El precio se actualiza según las opciones elegidas</div>
+          </div>
+          <span id="base-price" data-price="0" style="display:none;"></span>
+        </div>
+
+        <!-- TAMAÑO -->
+        <div class="custom-section">
+          <div class="custom-section-title">
+            Tamaño / Porciones
+            <span class="price-mod">Puede variar el precio</span>
+          </div>
+          <div class="option-group" id="size-options"></div>
+        </div>
+
+        <!-- SABOR DEL BIZCOCHO -->
+        <div class="custom-section">
+          <div class="custom-section-title">Sabor del bizcocho</div>
+          <div class="option-group" id="flavor-options"></div>
+        </div>
+
+        <!-- COBERTURA / DECORACIÓN -->
+        <div class="custom-section">
+          <div class="custom-section-title">
+            Cobertura / Decoración
+            <span class="price-mod">Puede variar el precio</span>
+          </div>
+          <div class="option-group" id="coating-options"></div>
+        </div>
+
+        <!-- MENSAJE PERSONALIZADO -->
+        <div class="custom-message-wrap custom-section">
+          <div class="custom-section-title">Mensaje personalizado</div>
+          <input
+            type="text"
+            id="custom-message"
+            class="form-input"
+            placeholder="Ej: ¡Feliz cumpleaños, Sofía! 🎉"
+            maxlength="80"
+          >
+          <span class="form-hint">Máximo 80 caracteres. Se escribe sobre el pastel.</span>
+        </div>
+
+        <!-- IMAGEN DE REFERENCIA -->
+        <div class="custom-section">
+          <div class="custom-section-title">
+            Imagen de referencia
+            <span class="price-mod">Opcional</span>
+          </div>
+          <div class="image-upload-area" onclick="document.getElementById('ref-image').click()">
+            <input type="file" id="ref-image" accept="image/*">
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-text">Haz click o arrastra tu imagen aquí</div>
+            <div class="upload-hint">PNG, JPG hasta 5MB</div>
+          </div>
+          <img id="ref-preview" class="upload-preview" style="display:none;" alt="Vista previa">
+        </div>
+
+        <!-- CANTIDAD Y AGREGAR AL CARRITO -->
+        <div class="add-to-cart-section">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="
+              const inp = document.getElementById('product-qty');
+              if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
+            ">−</button>
+            <input class="qty-input" type="number" id="product-qty" value="1" min="1" max="10">
+            <button class="qty-btn" onclick="
+              const inp = document.getElementById('product-qty');
+              if (parseInt(inp.value) < 10) inp.value = parseInt(inp.value) + 1;
+            ">+</button>
+          </div>
+          <button
+            id="add-to-cart-btn"
+            class="btn btn-primary btn-lg"
+            style="flex:1;"
+          >
+            🛒 Agregar al carrito
+          </button>
+        </div>
+
+        <!-- Garantías -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-top:var(--space-6);
+                    padding:var(--space-5);background:var(--color-bg-section);border-radius:var(--radius-xl);">
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);display:flex;gap:8px;align-items:center;">
+            <span>🚚</span> Envío a domicilio disponible
+          </div>
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);display:flex;gap:8px;align-items:center;">
+            <span>🌿</span> Ingredientes naturales
+          </div>
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);display:flex;gap:8px;align-items:center;">
+            <span>⏰</span> Listo en 24-48 horas
+          </div>
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);display:flex;gap:8px;align-items:center;">
+            <span>❤️</span> Hecho a mano
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS: Descripción / Información adicional -->
+    <div class="product-tabs">
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="tab-description">Descripción</button>
+        <button class="tab-btn" data-tab="tab-info">Información adicional</button>
+        <button class="tab-btn" data-tab="tab-delivery">Entrega & Pedido</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-description">
+        <p id="product-description" style="color:var(--color-text-muted);line-height:1.8;max-width:700px;">
+          Cargando descripción...
+        </p>
+      </div>
+
+      <div class="tab-panel" id="tab-info">
+        <div style="max-width:600px;">
+          <h4 style="margin-bottom:var(--space-4);">¿Cómo conservar tu pastel?</h4>
+          <ul style="color:var(--color-text-muted);line-height:2;padding-left:var(--space-5);list-style:disc;">
+            <li>Conservar en refrigeración entre 2°C y 8°C.</li>
+            <li>Consumir preferiblemente dentro de las 48 horas.</li>
+            <li>Si contiene frutas frescas, consumir el mismo día.</li>
+            <li>Sacar del refrigerador 20 minutos antes de servir.</li>
+          </ul>
+          <h4 style="margin-top:var(--space-6);margin-bottom:var(--space-4);">Alérgenos comunes</h4>
+          <p style="color:var(--color-text-muted);">Puede contener: gluten, huevos, leche, nueces y derivados. Si tienes alguna alergia o intolerancia, indícalo en el campo de notas al hacer tu pedido.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-delivery">
+        <div style="max-width:600px;">
+          <h4 style="margin-bottom:var(--space-4);">Tiempo de preparación</h4>
+          <p style="color:var(--color-text-muted);margin-bottom:var(--space-5);">
+            Nuestros pasteles se preparan artesanalmente. El tiempo de preparación es de 24 a 48 horas desde la confirmación del pedido.
+          </p>
+          <h4 style="margin-bottom:var(--space-4);">Zona de entrega</h4>
+          <p style="color:var(--color-text-muted);margin-bottom:var(--space-5);">
+            Entregamos en La Paz y El Alto. El costo de envío es de 5.00 Bs a domicilio.
+          </p>
+          <h4 style="margin-bottom:var(--space-4);">Métodos de pago</h4>
+          <p style="color:var(--color-text-muted);">
+            Aceptamos efectivo al momento de la entrega, transferencia bancaria y Yape/Plin.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding-bottom: var(--space-16);"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Cake<span>Sphere</span></div>
+          <p class="footer-desc">Pasteles artesanales premium para cada ocasión especial.</p>
+          <div class="footer-social">
+            <a href="#">📷</a><a href="#">📘</a><a href="#">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Menú</h4>
+          <div class="footer-links">
+            <a href="index.html">Inicio</a>
+            <a href="catalog.html">Catálogo</a>
+            <a href="contact.html">Contacto</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Mi cuenta</h4>
+          <div class="footer-links">
+            <a href="login.html">Iniciar sesión</a>
+            <a href="orders.html">Mis pedidos</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <div class="footer-links">
+            <a href="tel:+59178594895">📞 +591 78594895</a>
+            <a href="mailto:hola@cakesphere.com">✉️ hola@cakesphere.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 CakeSphere. Todos los derechos reservados. · <a href="admin/login.html" style="color:var(--color-text-muted);">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>
