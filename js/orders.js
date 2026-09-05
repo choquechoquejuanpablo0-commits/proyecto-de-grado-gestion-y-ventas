@@ -88,16 +88,52 @@ async function handleCheckoutSubmit(e) {
 
     const cart = getCart();
 
-    // Insertar pedido en Supabase (sin pedir que devuelva la fila)
+    // 1) Descontar stock de forma segura ANTES de crear el pedido.
+    //    decrement_stock() (ver sql/fix_stock_seguro.sql) valida el stock
+    //    real y lanza un error si no alcanza, así que si algún producto
+    //    no tiene suficiente, la compra se cancela aquí mismo y el
+    //    pedido NUNCA se llega a crear.
+    const stockDescontado = []; // para poder revertir si algo falla después
+
+    try {
+      for (const item of cart) {
+        const { error: stockError } = await _supabase.rpc('decrement_stock', {
+          p_product_id: item.productId,
+          p_quantity:   item.quantity
+        });
+        if (stockError) throw stockError;
+        stockDescontado.push(item);
+      }
+    } catch (stockErr) {
+      // Revertir lo que sí se alcanzó a descontar antes del fallo
+      for (const item of stockDescontado) {
+        await _supabase.rpc('increment_stock', {
+          p_product_id: item.productId,
+          p_quantity:   item.quantity
+        }).catch(() => {});
+      }
+      throw new Error('No hay stock suficiente para completar tu pedido. Ajusta las cantidades en tu carrito e intenta de nuevo.');
+    }
+
+    // 2) Insertar pedido en Supabase (sin pedir que devuelva la fila)
     const { error: orderError } = await _supabase
       .from('orders')
       .insert(orderData);
 
-    if (orderError) throw orderError;
+    if (orderError) {
+      // El stock ya se había descontado: hay que devolverlo
+      for (const item of cart) {
+        await _supabase.rpc('increment_stock', {
+          p_product_id: item.productId,
+          p_quantity:   item.quantity
+        }).catch(() => {});
+      }
+      throw orderError;
+    }
 
     const order = orderData;
 
-    // Insertar items del pedido
+    // 3) Insertar items del pedido
     const items = cart.map(item => ({
       order_id:      order.id,
       product_id:    item.productId,
@@ -113,29 +149,17 @@ async function handleCheckoutSubmit(e) {
       .from('order_items')
       .insert(items);
 
-    if (itemsError) throw itemsError;
-
-    // Actualizar stock de productos
-for (const item of cart) {
-  try {
-    const { error: stockError } = await _supabase.rpc('decrement_stock', {
-      p_product_id: item.productId,
-      p_quantity:   item.quantity
-    });
-    if (stockError) throw stockError;
-  } catch (err) {
-    // Si la función RPC no existe (o falla), hacemos update manual
-    try {
-      const { error: manualError } = await _supabase.rpc('update_stock_manual', {
-        pid: item.productId,
-        qty: item.quantity
-      });
-      if (manualError) console.warn('No se pudo actualizar stock manualmente:', manualError);
-    } catch (err2) {
-      console.warn('No se pudo actualizar el stock de', item.productId, err2);
+    if (itemsError) {
+      // Revertir stock y borrar el pedido a medio crear
+      for (const item of cart) {
+        await _supabase.rpc('increment_stock', {
+          p_product_id: item.productId,
+          p_quantity:   item.quantity
+        }).catch(() => {});
+      }
+      await _supabase.from('orders').delete().eq('id', order.id).catch(() => {});
+      throw itemsError;
     }
-  }
-}
 
     // Limpiar carrito
     clearCart();

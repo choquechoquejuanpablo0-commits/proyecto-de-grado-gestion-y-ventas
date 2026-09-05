@@ -466,6 +466,25 @@ function setupAddToCartBtn(product) {
   btn.dataset.productId    = product.id;
   btn.dataset.productName  = product.name;
   btn.dataset.productImage = product.image_url || '';
+  btn.dataset.productStock = Number(product.stock) || 0;
+
+  // Limitar la cantidad seleccionable al stock real que puso el admin
+  const qtyInput = document.getElementById('product-qty');
+  if (qtyInput) {
+    const maxQty = Math.max(Number(product.stock) || 0, 1);
+    qtyInput.max = maxQty;
+
+    const clampQty = () => {
+      let val = parseInt(qtyInput.value, 10);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > maxQty) val = maxQty;
+      qtyInput.value = val;
+    };
+
+    qtyInput.addEventListener('input', clampQty);
+    qtyInput.addEventListener('change', clampQty);
+    clampQty();
+  }
 }
 
 // ============================================================

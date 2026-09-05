@@ -309,10 +309,36 @@ function initProductCustomizer() {
     const productId   = addBtn.dataset.productId;
     const productName = addBtn.dataset.productName;
     const productImg  = addBtn.dataset.productImage;
+    const stock       = parseInt(addBtn.dataset.productStock || '0', 10);
 
     const customizations = getSelectedCustomizations();
     const price          = getCurrentPrice();
-    const qty            = parseInt(document.getElementById('product-qty')?.value || '1', 10);
+    const qtyInput        = document.getElementById('product-qty');
+    let qty               = parseInt(qtyInput?.value || '1', 10);
+
+    if (isNaN(qty) || qty < 1) qty = 1;
+
+    // Cuánto de este producto ya está en el carrito (en cualquier variante/tamaño)
+    const yaEnCarrito = getCart()
+      .filter(item => item.productId === productId)
+      .reduce((sum, item) => sum + item.quantity, 0);
+
+    const disponible = Math.max(stock - yaEnCarrito, 0);
+
+    if (stock > 0 && qty > disponible) {
+      qty = disponible;
+      if (qtyInput) qtyInput.value = disponible || 1;
+
+      showToast(
+        'Stock insuficiente',
+        disponible > 0
+          ? `Solo puedes agregar ${disponible} unidad(es) más de este producto (stock total: ${stock}).`
+          : `Ya tienes en tu carrito todo el stock disponible de este producto (${stock}).`,
+        'warning'
+      );
+
+      if (disponible <= 0) return;
+    }
 
     addToCart({
       productId,

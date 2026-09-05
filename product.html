@@ -131,7 +131,7 @@
 
         <!-- CANTIDAD Y AGREGAR AL CARRITO -->
         <div class="add-to-cart-section">
-          <div class="qty-control">
+                    <div class="qty-control">
             <button class="qty-btn" onclick="
               const inp = document.getElementById('product-qty');
               if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
@@ -139,7 +139,8 @@
             <input class="qty-input" type="number" id="product-qty" value="1" min="1" max="10">
             <button class="qty-btn" onclick="
               const inp = document.getElementById('product-qty');
-              if (parseInt(inp.value) < 10) inp.value = parseInt(inp.value) + 1;
+              const max = parseInt(inp.max, 10) || 1;
+              if (parseInt(inp.value) < max) inp.value = parseInt(inp.value) + 1;
             ">+</button>
           </div>
           <button
