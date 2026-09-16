@@ -53,6 +53,42 @@ function initCheckoutForm() {
 }
 
 /**
+ * Descuenta stock de un ítem del carrito. Si el ítem tiene un
+ * tamaño/porción seleccionado, descuenta el stock INDIVIDUAL de
+ * ese tamaño; si no, descuenta el stock general del producto.
+ */
+async function decrementStockForItem(item) {
+  if (item.customizations?.size) {
+    return _supabase.rpc('decrement_size_stock', {
+      p_product_id: item.productId,
+      p_size_name:  item.customizations.size,
+      p_quantity:   item.quantity
+    });
+  }
+  return _supabase.rpc('decrement_stock', {
+    p_product_id: item.productId,
+    p_quantity:   item.quantity
+  });
+}
+
+/**
+ * Devuelve (revierte) el stock descontado de un ítem del carrito.
+ */
+async function incrementStockForItem(item) {
+  if (item.customizations?.size) {
+    return _supabase.rpc('increment_size_stock', {
+      p_product_id: item.productId,
+      p_size_name:  item.customizations.size,
+      p_quantity:   item.quantity
+    }).catch(() => {});
+  }
+  return _supabase.rpc('increment_stock', {
+    p_product_id: item.productId,
+    p_quantity:   item.quantity
+  }).catch(() => {});
+}
+
+/**
  * Maneja el envío del formulario de checkout
  */
 async function handleCheckoutSubmit(e) {
@@ -97,20 +133,14 @@ async function handleCheckoutSubmit(e) {
 
     try {
       for (const item of cart) {
-        const { error: stockError } = await _supabase.rpc('decrement_stock', {
-          p_product_id: item.productId,
-          p_quantity:   item.quantity
-        });
+        const { error: stockError } = await decrementStockForItem(item);
         if (stockError) throw stockError;
         stockDescontado.push(item);
       }
     } catch (stockErr) {
       // Revertir lo que sí se alcanzó a descontar antes del fallo
       for (const item of stockDescontado) {
-        await _supabase.rpc('increment_stock', {
-          p_product_id: item.productId,
-          p_quantity:   item.quantity
-        }).catch(() => {});
+        await incrementStockForItem(item);
       }
       throw new Error('No hay stock suficiente para completar tu pedido. Ajusta las cantidades en tu carrito e intenta de nuevo.');
     }
@@ -123,10 +153,7 @@ async function handleCheckoutSubmit(e) {
     if (orderError) {
       // El stock ya se había descontado: hay que devolverlo
       for (const item of cart) {
-        await _supabase.rpc('increment_stock', {
-          p_product_id: item.productId,
-          p_quantity:   item.quantity
-        }).catch(() => {});
+        await incrementStockForItem(item);
       }
       throw orderError;
     }
@@ -152,10 +179,7 @@ async function handleCheckoutSubmit(e) {
     if (itemsError) {
       // Revertir stock y borrar el pedido a medio crear
       for (const item of cart) {
-        await _supabase.rpc('increment_stock', {
-          p_product_id: item.productId,
-          p_quantity:   item.quantity
-        }).catch(() => {});
+        await incrementStockForItem(item);
       }
       await _supabase.from('orders').delete().eq('id', order.id).catch(() => {});
       throw itemsError;

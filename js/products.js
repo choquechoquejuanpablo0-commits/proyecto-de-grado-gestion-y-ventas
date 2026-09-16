@@ -362,8 +362,8 @@ function renderProductDetail(product) {
     mainImg.alt = product.name;
   }
 
-  // Opciones de tamaño
-  renderOptions('size', product.sizes || [], 'size-options');
+  // Opciones de tamaño (cada una con su propio stock)
+  renderSizeOptions(product.sizes || [], 'size-options');
 
   // Opciones de sabor
   renderOptions('flavor', product.flavors || [], 'flavor-options');
@@ -412,6 +412,57 @@ function renderOptions(group, options, containerId) {
       recalculatePrice();
     });
   });
+}
+
+/**
+ * Renderiza las opciones de tamaño/porción, cada una con su
+ * propio stock individual. Deshabilita los tamaños agotados y
+ * selecciona por defecto el primer tamaño que sí tenga stock.
+ */
+function renderSizeOptions(sizes, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!sizes || !sizes.length) {
+    container.closest('.custom-section')?.remove();
+    return;
+  }
+
+  const firstAvailable = sizes.findIndex(s => (Number(s.stock) || 0) > 0);
+  const selectedIndex  = firstAvailable >= 0 ? firstAvailable : 0;
+
+  container.innerHTML = sizes.map((opt, i) => {
+    const stock    = Number(opt.stock) || 0;
+    const isOut     = stock <= 0;
+    const isLow     = !isOut && stock <= 3;
+    const selected  = i === selectedIndex && !isOut;
+    const stockText = isOut ? 'Agotado' : `${stock} disponible${stock === 1 ? '' : 's'}`;
+
+    return `
+      <label class="option-card ${selected ? 'selected' : ''} ${isOut ? 'option-disabled' : ''}"
+             data-group="size"
+             data-value="${opt.name}"
+             data-pricemod="${opt.price_mod || 0}"
+             data-stock="${stock}">
+        <input type="radio" name="size" value="${opt.name}" ${selected ? 'checked' : ''} ${isOut ? 'disabled' : ''}>
+        <span>${opt.name}</span>
+        ${opt.price_mod > 0 ? `<span style="color:var(--color-accent-gold);font-size:10px;">+${formatPrice(opt.price_mod)}</span>` : ''}
+        <span class="option-stock-badge ${isOut ? 'is-out' : isLow ? 'is-low' : ''}">(${stockText})</span>
+      </label>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.option-card:not(.option-disabled)').forEach(card => {
+    card.addEventListener('click', () => {
+      container.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      recalculatePrice();
+      updateQtyLimitForSelectedSize();
+    });
+  });
+
+  // Ajusta la cantidad máxima según el tamaño ya seleccionado
+  updateQtyLimitForSelectedSize();
 }
 
 /**
@@ -466,15 +517,18 @@ function setupAddToCartBtn(product) {
   btn.dataset.productId    = product.id;
   btn.dataset.productName  = product.name;
   btn.dataset.productImage = product.image_url || '';
+  // Stock del producto completo (solo se usa como respaldo si el
+  // producto NO tiene tamaños con stock individual)
   btn.dataset.productStock = Number(product.stock) || 0;
 
-  // Limitar la cantidad seleccionable al stock real que puso el admin
+  // Limitar la cantidad seleccionable al stock real disponible.
+  // Si el producto tiene tamaños, el límite se recalcula cada vez
+  // que el cliente cambia de tamaño (ver updateQtyLimitForSelectedSize
+  // en cart.js, invocado desde renderSizeOptions).
   const qtyInput = document.getElementById('product-qty');
   if (qtyInput) {
-    const maxQty = Math.max(Number(product.stock) || 0, 1);
-    qtyInput.max = maxQty;
-
     const clampQty = () => {
+      const maxQty = Math.max(parseInt(qtyInput.max, 10) || 1, 1);
       let val = parseInt(qtyInput.value, 10);
       if (isNaN(val) || val < 1) val = 1;
       if (val > maxQty) val = maxQty;
@@ -483,7 +537,11 @@ function setupAddToCartBtn(product) {
 
     qtyInput.addEventListener('input', clampQty);
     qtyInput.addEventListener('change', clampQty);
-    clampQty();
+  }
+
+  // Si el producto no tiene tamaños, el límite es el stock general
+  if (!product.sizes || !product.sizes.length) {
+    updateQtyLimitForSelectedSize();
   }
 }
 

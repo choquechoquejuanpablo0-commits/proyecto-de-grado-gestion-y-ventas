@@ -403,14 +403,14 @@
   margin-bottom: var(--space-2);
   line-height: 1.3;
 }
-
+/* -webkit-line-clamp: 2;*/
 .card-desc {
   color: var(--color-text-muted);
   font-size: var(--text-sm);
   line-height: 1.5;
   margin-bottom: var(--space-4);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clam: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -622,6 +622,18 @@
   color: var(--color-accent-gold);
 }
 .option-card input { display: none; }
+
+.option-card.option-disabled {
+  cursor: not-allowed;
+  opacity: .45;
+  pointer-events: none;
+}
+.option-stock-badge {
+  font-size: 10px;
+  margin-left: 2px;
+}
+.option-stock-badge.is-low  { color: var(--color-warning); }
+.option-stock-badge.is-out  { color: var(--color-error); }
 
 /* ========== MODALES ========== */
 .modal-overlay {

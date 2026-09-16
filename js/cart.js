@@ -309,7 +309,6 @@ function initProductCustomizer() {
     const productId   = addBtn.dataset.productId;
     const productName = addBtn.dataset.productName;
     const productImg  = addBtn.dataset.productImage;
-    const stock       = parseInt(addBtn.dataset.productStock || '0', 10);
 
     const customizations = getSelectedCustomizations();
     const price          = getCurrentPrice();
@@ -318,22 +317,34 @@ function initProductCustomizer() {
 
     if (isNaN(qty) || qty < 1) qty = 1;
 
-    // Cuánto de este producto ya está en el carrito (en cualquier variante/tamaño)
+    // Stock a validar: si el producto tiene tamaños, se usa el
+    // stock INDIVIDUAL del tamaño elegido. Si no tiene tamaños,
+    // se usa el stock general del producto.
+    const sizeStock = getSelectedSizeStock();
+    const stock = sizeStock !== null ? sizeStock : parseInt(addBtn.dataset.productStock || '0', 10);
+
+    if (stock <= 0) {
+      showToast('Sin stock', 'Esta opción no tiene unidades disponibles.', 'error');
+      return;
+    }
+
+    // Cuánto de este producto + mismo tamaño ya está en el carrito
+    // (cada tamaño tiene su propio cupo, así que no se mezclan)
     const yaEnCarrito = getCart()
-      .filter(item => item.productId === productId)
+      .filter(item => item.productId === productId && item.customizations?.size === customizations.size)
       .reduce((sum, item) => sum + item.quantity, 0);
 
     const disponible = Math.max(stock - yaEnCarrito, 0);
 
-    if (stock > 0 && qty > disponible) {
+    if (qty > disponible) {
       qty = disponible;
       if (qtyInput) qtyInput.value = disponible || 1;
 
       showToast(
         'Stock insuficiente',
         disponible > 0
-          ? `Solo puedes agregar ${disponible} unidad(es) más de este producto (stock total: ${stock}).`
-          : `Ya tienes en tu carrito todo el stock disponible de este producto (${stock}).`,
+          ? `Solo puedes agregar ${disponible} unidad(es) más de esta opción (stock: ${stock}).`
+          : `Ya tienes en tu carrito todo el stock disponible de esta opción (${stock}).`,
         'warning'
       );
 
@@ -406,6 +417,50 @@ function recalculatePrice() {
   const price = getCurrentPrice();
   const priceEl = document.getElementById('current-price');
   if (priceEl) priceEl.textContent = formatPrice(price);
+}
+
+/**
+ * Devuelve el stock del tamaño actualmente seleccionado, o null
+ * si el producto no tiene tamaños (en ese caso se usa el stock
+ * general del producto).
+ */
+function getSelectedSizeStock() {
+  const selectedSize = document.querySelector('.option-card[data-group="size"].selected');
+  if (selectedSize) return parseInt(selectedSize.dataset.stock || '0', 10);
+
+  const anySize = document.querySelector('.option-card[data-group="size"]');
+  if (anySize) return 0; // hay tamaños pero ninguno seleccionado (todos agotados)
+
+  return null; // el producto no maneja tamaños
+}
+
+/**
+ * Ajusta la cantidad máxima seleccionable y el botón de agregar
+ * según el stock del tamaño elegido (o el stock general si el
+ * producto no tiene tamaños).
+ */
+function updateQtyLimitForSelectedSize() {
+  const qtyInput = document.getElementById('product-qty');
+  const addBtn   = document.getElementById('add-to-cart-btn');
+  if (!qtyInput || !addBtn) return;
+
+  const sizeStock = getSelectedSizeStock();
+  const stock = sizeStock !== null ? sizeStock : parseInt(addBtn.dataset.productStock || '0', 10);
+
+  qtyInput.max = Math.max(stock, 1);
+  if (parseInt(qtyInput.value, 10) > stock) {
+    qtyInput.value = Math.max(stock, 1);
+  }
+
+  if (stock <= 0) {
+    addBtn.disabled = true;
+    addBtn.textContent = 'Sin stock para este tamaño';
+  } else {
+    addBtn.disabled = false;
+    if (addBtn.textContent.includes('Sin stock')) {
+      addBtn.textContent = '🛒 Agregar al carrito';
+    }
+  }
 }
 
 // ============================================================
