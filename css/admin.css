@@ -235,7 +235,6 @@
 }
 .stat-card:hover { box-shadow: var(--shadow-sm); }
 
-.stat-card-body {}
 .stat-card-label {
   font-size: var(--text-xs);
   text-transform: uppercase;
@@ -244,6 +243,7 @@
   font-weight: 600;
   margin-bottom: var(--space-2);
 }
+
 .stat-card-value {
   font-family: var(--font-heading);
   font-size: var(--text-3xl);
