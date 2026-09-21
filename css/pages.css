@@ -21,7 +21,7 @@
   background: linear-gradient(
     135deg,
     var(--color-primary) 0%,
-    #3b0b65 40%,
+    #2D1650 40%,
     #3D1060 100%
   );
 }
@@ -1079,7 +1079,7 @@
 
 .payment-methods {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-3);
 }
 .payment-option {

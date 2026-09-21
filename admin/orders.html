@@ -202,6 +202,22 @@
       loadAdminOrders();
     }
 
+    // Marcar el pago (simulado) de una transferencia como verificado
+    async function verifyPayment(orderId) {
+      try {
+        const { error } = await _supabase
+          .from('orders')
+          .update({ payment_status: 'pago_verificado' })
+          .eq('id', orderId);
+        if (error) throw error;
+        showToast('Pago verificado', 'El pago fue marcado como verificado.', 'success');
+        closeModal('order-detail-modal');
+        loadAdminOrders();
+      } catch (err) {
+        showToast('Error', err.message, 'error');
+      }
+    }
+
     // Sobrescribir viewOrderDetail para usar el modal propio
     async function viewOrderDetail(orderId) {
       openModal('order-detail-modal');
@@ -246,7 +262,17 @@
               </div>
               <div>
                 <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Método de pago</div>
-                <div>${{efectivo:'💵 Efectivo',transferencia:'🏦 Transferencia',yape:'📱 Yape/Plin'}[order.payment_method] || order.payment_method}</div>
+                <div>${{efectivo:'💵 Efectivo',transferencia:'🏦 Transferencia',yape:'📱 Yape/Plin',tarjeta:'💳 Tarjeta'}[order.payment_method] || order.payment_method}</div>
+              </div>
+              <div style="grid-column:1/-1;">
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Estado del pago</div>
+                <div>${{pendiente_entrega:'⏳ Paga al recibir',pago_simulado:'💳 Pago simulado OK',comprobante_enviado:'📎 Comprobante enviado',pago_verificado:'✅ Pago verificado'}[order.payment_status] || '—'}</div>
+                ${order.payment_method === 'transferencia' ? `
+                  <div style="font-size:var(--text-sm);color:var(--color-text-muted);margin-top:6px;">
+                    N.º operación: <strong>${order.payment_reference || '—'}</strong><br>
+                    Comprobante: ${order.payment_proof_name || '—'}
+                  </div>
+                ` : ''}
               </div>
             </div>
 
@@ -290,6 +316,13 @@
                 `).join('')}
               </div>
             </div>
+            ${order.payment_method === 'transferencia' && order.payment_status !== 'pago_verificado' ? `
+              <div style="border-top:1px solid var(--color-border);padding-top:var(--space-4);">
+                <button onclick="verifyPayment('${order.id}')" class="btn btn-success btn-sm">
+                  ✅ Marcar pago como verificado
+                </button>
+              </div>
+            ` : ''}
           </div>
         `;
       } catch(err) {

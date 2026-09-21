@@ -145,6 +145,11 @@
               <div class="payment-icon">📱</div>
               <div class="payment-label">Yape / Plin</div>
             </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="tarjeta">
+              <div class="payment-icon">💳</div>
+              <div class="payment-label">Tarjeta</div>
+            </label>
           </div>
 
           <!-- Info transferencia -->
@@ -152,9 +157,69 @@
                background:var(--color-bg-section);border-radius:var(--radius-lg);
                font-size:var(--text-sm);color:var(--color-text-muted);display:none;">
             <strong>Datos para transferencia:</strong><br>
-            BCP — Cuenta de ahorros: 123-45678901-0-12<br>
+            BCP — Cuenta de ahorros: 845-45678901-21-12<br>
             A nombre de: CakeSphere S.A.C.<br>
             Enviar voucher por WhatsApp al: +591 78594895
+          </div>
+
+          <!-- Info Yape / Plin -->
+          <div id="yape-info" style="margin-top:var(--space-5);padding:var(--space-4);
+               background:var(--color-bg-section);border-radius:var(--radius-lg);
+               font-size:var(--text-sm);color:var(--color-text-muted);display:none;text-align:center;">
+            <strong>Escanea el código QR para pagar:</strong>
+            <div style="margin:var(--space-4) 0;">
+              <img src="QR PASTEL.png" alt="Código QR Yape / Plin"
+                   style="max-width:220px;width:100%;border-radius:var(--radius-lg);display:inline-block;">
+            </div>
+            Envía tu comprobante por WhatsApp al: +591 78594895
+          </div>
+
+          <!-- Comprobante de transferencia (simulado) -->
+          <div id="transfer-proof-info" style="margin-top:var(--space-5);display:none;">
+            <div class="grid grid-2">
+              <div class="form-group" style="grid-column:1/-1;">
+                <label class="form-label" for="transfer-reference">N.º de operación / referencia <span class="required">*</span></label>
+                <input type="text" id="transfer-reference" class="form-input" placeholder="Ej: 000123456">
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group" style="grid-column:1/-1;">
+                <label class="form-label" for="transfer-proof">Comprobante de pago (captura o foto) <span class="required">*</span></label>
+                <input type="file" id="transfer-proof" class="form-input" accept="image/*,application/pdf">
+                <span class="form-error"></span>
+              </div>
+            </div>
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-3);">
+              🔒 Comprobante simulado para la demostración: solo se guarda el nombre del archivo, no se sube a ningún servidor.
+            </p>
+          </div>
+
+          <!-- Info tarjeta -->
+          <div id="card-info" style="margin-top:var(--space-5);display:none;">
+            <div class="grid grid-2">
+              <div class="form-group" style="grid-column:1/-1;">
+                <label class="form-label" for="card-name">Nombre en la tarjeta <span class="required">*</span></label>
+                <input type="text" id="card-name" class="form-input" placeholder="Como aparece en la tarjeta">
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group" style="grid-column:1/-1;">
+                <label class="form-label" for="card-number">Número de tarjeta <span class="required">*</span></label>
+                <input type="text" id="card-number" class="form-input" placeholder="1234 5678 9012 3456" inputmode="numeric" maxlength="19">
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="card-expiry">Vencimiento (MM/AA) <span class="required">*</span></label>
+                <input type="text" id="card-expiry" class="form-input" placeholder="MM/AA" inputmode="numeric" maxlength="5">
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="card-cvv">CVV <span class="required">*</span></label>
+                <input type="text" id="card-cvv" class="form-input" placeholder="123" inputmode="numeric" maxlength="4">
+                <span class="form-error"></span>
+              </div>
+            </div>
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-3);">
+              🔒 Estos datos se validan solo en tu navegador y no se guardan ni se envían a ningún servidor.
+            </p>
           </div>
         </div>
 
@@ -214,14 +279,61 @@
         dateInput.min = minDate.toISOString().slice(0, 16);
       }
 
-      // Toggle info bancaria
+      // Toggle info bancaria / yape / tarjeta / comprobante
+      const cardFieldIds     = ['card-name', 'card-number', 'card-expiry', 'card-cvv'];
+      const transferFieldIds = ['transfer-reference', 'transfer-proof'];
       document.querySelectorAll('.payment-option').forEach(opt => {
         opt.addEventListener('click', () => {
           const val = opt.querySelector('input')?.value;
-          const bankInfo = document.getElementById('bank-info');
-          if (bankInfo) bankInfo.style.display = val === 'transferencia' ? 'block' : 'none';
+          const bankInfo     = document.getElementById('bank-info');
+          const yapeInfo     = document.getElementById('yape-info');
+          const cardInfo     = document.getElementById('card-info');
+          const transferInfo = document.getElementById('transfer-proof-info');
+          if (bankInfo)     bankInfo.style.display     = val === 'transferencia' ? 'block' : 'none';
+          if (yapeInfo)     yapeInfo.style.display     = val === 'yape' ? 'block' : 'none';
+          if (cardInfo)     cardInfo.style.display     = val === 'tarjeta' ? 'block' : 'none';
+          if (transferInfo) transferInfo.style.display = val === 'transferencia' ? 'block' : 'none';
+
+          const toggleRequired = (ids, active) => {
+            ids.forEach(id => {
+              const field = document.getElementById(id);
+              if (!field) return;
+              if (active) {
+                field.setAttribute('required', 'required');
+              } else {
+                field.removeAttribute('required');
+                field.classList.remove('error');
+                const errorEl = field.parentElement.querySelector('.form-error');
+                if (errorEl) errorEl.textContent = '';
+              }
+            });
+          };
+          toggleRequired(cardFieldIds, val === 'tarjeta');
+          toggleRequired(transferFieldIds, val === 'transferencia');
         });
       });
+
+      // Autoformato del número de tarjeta y vencimiento
+      const cardNumberInput = document.getElementById('card-number');
+      if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', () => {
+          let digits = cardNumberInput.value.replace(/\D/g, '').slice(0, 16);
+          cardNumberInput.value = digits.replace(/(.{4})/g, '$1 ').trim();
+        });
+      }
+      const cardExpiryInput = document.getElementById('card-expiry');
+      if (cardExpiryInput) {
+        cardExpiryInput.addEventListener('input', () => {
+          let digits = cardExpiryInput.value.replace(/\D/g, '').slice(0, 4);
+          cardExpiryInput.value = digits.length > 2 ? digits.slice(0, 2) + '/' + digits.slice(2) : digits;
+        });
+      }
+      const cardCvvInput = document.getElementById('card-cvv');
+      if (cardCvvInput) {
+        cardCvvInput.addEventListener('input', () => {
+          cardCvvInput.value = cardCvvInput.value.replace(/\D/g, '').slice(0, 4);
+        });
+      }
     });
   </script>
 </body>

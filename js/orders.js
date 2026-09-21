@@ -89,12 +89,141 @@ async function incrementStockForItem(item) {
 }
 
 /**
+ * Valida los campos de tarjeta cuando el método de pago es "tarjeta".
+ * Solo valida formato (número con algoritmo de Luhn, vencimiento y CVV);
+ * no se realiza ningún cobro real ni se guarda el número de tarjeta.
+ */
+function validateCardFields(form) {
+  const selectedPayment = document.querySelector('.payment-option.selected input')?.value;
+  if (selectedPayment !== 'tarjeta') return true;
+
+  let isValid = true;
+  const setError = (id, message) => {
+    const field = document.getElementById(id);
+    if (!field) return;
+    const errorEl = field.parentElement.querySelector('.form-error');
+    field.classList.add('error');
+    if (errorEl) errorEl.textContent = message;
+    isValid = false;
+  };
+
+  const nameField   = document.getElementById('card-name');
+  const numberField = document.getElementById('card-number');
+  const expiryField = document.getElementById('card-expiry');
+  const cvvField    = document.getElementById('card-cvv');
+
+  if (!nameField?.value.trim()) {
+    setError('card-name', 'Ingresa el nombre en la tarjeta.');
+  }
+
+  const digits = (numberField?.value || '').replace(/\D/g, '');
+  if (digits.length < 13 || digits.length > 16 || !luhnCheck(digits)) {
+    setError('card-number', 'Número de tarjeta inválido.');
+  }
+
+  const expiryMatch = /^(\d{2})\/(\d{2})$/.exec(expiryField?.value || '');
+  if (!expiryMatch) {
+    setError('card-expiry', 'Usa el formato MM/AA.');
+  } else {
+    const month = parseInt(expiryMatch[1], 10);
+    const year  = parseInt('20' + expiryMatch[2], 10);
+    const now   = new Date();
+    const expiryDate = new Date(year, month, 0);
+    if (month < 1 || month > 12) {
+      setError('card-expiry', 'Mes inválido.');
+    } else if (expiryDate < now) {
+      setError('card-expiry', 'La tarjeta está vencida.');
+    }
+  }
+
+  const cvv = (cvvField?.value || '').trim();
+  if (!/^\d{3,4}$/.test(cvv)) {
+    setError('card-cvv', 'CVV inválido.');
+  }
+
+  if (!isValid) {
+    const firstError = form.querySelector('#card-info .form-input.error');
+    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  return isValid;
+}
+
+/**
+ * Algoritmo de Luhn: valida que un número de tarjeta tenga un formato
+ * matemáticamente válido (no confirma que la tarjeta exista de verdad).
+ */
+function luhnCheck(cardNumber) {
+  let sum = 0;
+  let shouldDouble = false;
+  for (let i = cardNumber.length - 1; i >= 0; i--) {
+    let digit = parseInt(cardNumber.charAt(i), 10);
+    if (shouldDouble) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+  return sum % 10 === 0;
+}
+
+/**
+ * Valida los campos de comprobante cuando el método de pago es "transferencia".
+ * Es una simulación para la demo: no se sube ningún archivo a un servidor,
+ * solo se guarda el nombre del archivo como evidencia de que se adjuntó algo.
+ */
+function validateTransferFields(form) {
+  const selectedPayment = document.querySelector('.payment-option.selected input')?.value;
+  if (selectedPayment !== 'transferencia') return true;
+
+  let isValid = true;
+  const setError = (id, message) => {
+    const field = document.getElementById(id);
+    if (!field) return;
+    const errorEl = field.parentElement.querySelector('.form-error');
+    field.classList.add('error');
+    if (errorEl) errorEl.textContent = message;
+    isValid = false;
+  };
+
+  const referenceField = document.getElementById('transfer-reference');
+  const proofField     = document.getElementById('transfer-proof');
+
+  if (!referenceField?.value.trim()) {
+    setError('transfer-reference', 'Ingresa el número de operación.');
+  }
+  if (!proofField?.files?.length) {
+    setError('transfer-proof', 'Adjunta el comprobante de pago.');
+  }
+
+  if (!isValid) {
+    const firstError = form.querySelector('#transfer-proof-info .form-input.error');
+    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  return isValid;
+}
+
+/**
+ * Calcula el estado inicial del pago según el método elegido.
+ * Es una simulación: no hay cobro real detrás de ninguno de estos estados.
+ */
+function paymentStatusFor(method) {
+  if (method === 'transferencia' || method === 'yape') return 'comprobante_enviado';
+  if (method === 'tarjeta') return 'pago_simulado';
+  return 'pendiente_entrega'; // efectivo: se paga al recibir
+}
+
+/**
  * Maneja el envío del formulario de checkout
  */
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
   const form = e.target;
   if (!validateForm(form)) return;
+  if (!validateCardFields(form)) return;
+  if (!validateTransferFields(form)) return;
 
   const btn = form.querySelector('[type="submit"]');
   setButtonLoading(btn, true);
@@ -115,6 +244,9 @@ async function handleCheckoutSubmit(e) {
       delivery_address: form.querySelector('#delivery-address').value.trim(),
       delivery_date:    form.querySelector('#delivery-date').value || null,
       payment_method:   document.querySelector('.payment-option.selected input')?.value || 'efectivo',
+      payment_status:   paymentStatusFor(document.querySelector('.payment-option.selected input')?.value || 'efectivo'),
+      payment_reference: document.getElementById('transfer-reference')?.value.trim() || null,
+      payment_proof_name: document.getElementById('transfer-proof')?.files?.[0]?.name || null,
       notes:            form.querySelector('#order-notes')?.value.trim() || '',
       subtotal:         getCartSubtotal(),
       delivery_fee:     DELIVERY_FEE,
@@ -187,6 +319,7 @@ async function handleCheckoutSubmit(e) {
 
     // Limpiar carrito
     clearCart();
+    ['card-number', 'card-cvv'].forEach(id => { const f = document.getElementById(id); if (f) f.value = ''; });
 
     // Guardar número de orden para la página de éxito
     localStorage.setItem('last_order_number', order.order_number);
