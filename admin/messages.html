@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mensajes — CakeSphere Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div id="global-loader"><div class="loader-logo">CakeSphere</div><div class="loader-spinner"></div></div>
+  <div id="toast-container"></div>
+
+  <div class="admin-app">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <div class="admin-logo-text">Cake<span>Sphere</span></div>
+        <div class="admin-logo-badge">Panel Admin</div>
+      </div>
+      <nav class="admin-nav">
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Principal</div>
+          <a href="dashboard.html" class="admin-nav-link"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="orders.html"    class="admin-nav-link"><span class="nav-icon">📦</span> Pedidos</a>
+          <a href="products.html"  class="admin-nav-link"><span class="nav-icon">🎂</span> Productos</a>
+          <a href="clients.html"   class="admin-nav-link"><span class="nav-icon">👥</span> Clientes</a>
+          <a href="messages.html"  class="admin-nav-link active"><span class="nav-icon">✉️</span> Mensajes</a>
+        </div>
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Tienda</div>
+          <a href="../index.html"   class="admin-nav-link" target="_blank"><span class="nav-icon">🛒</span> Ver tienda</a>
+          <a href="../catalog.html" class="admin-nav-link" target="_blank"><span class="nav-icon">📋</span> Ver catálogo</a>
+        </div>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-info">
+          <div class="admin-user-avatar">A</div>
+          <div>
+            <div class="admin-user-name">Administrador</div>
+            <div class="admin-user-role">CakeSphere</div>
+          </div>
+        </div>
+        <button class="admin-nav-link" data-logout style="width:100%;margin-top:8px;border:none;cursor:pointer;background:none;font-family:inherit;">
+          <span class="nav-icon">🚪</span> Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div class="admin-topbar-title">Mensajes de contacto</div>
+        <div class="admin-topbar-right">
+          <button class="btn btn-ghost btn-sm" onclick="loadAdminMessages()">🔄 Actualizar</button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:var(--space-6);">
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Total mensajes</div>
+              <div class="stat-card-value" id="stat-total-messages">—</div>
+            </div>
+            <div class="stat-card-icon" style="background:#eaf2fb;color:var(--color-info);">✉️</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Sin leer</div>
+              <div class="stat-card-value" id="stat-unread-messages" style="color:var(--color-error);">—</div>
+            </div>
+            <div class="stat-card-icon" style="background:#fdeaea;color:var(--color-error);">🔴</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-body">
+              <div class="stat-card-label">Esta semana</div>
+              <div class="stat-card-value" id="stat-week-messages">—</div>
+            </div>
+            <div class="stat-card-icon" style="background:#fdf6e9;color:var(--color-accent-gold);">🆕</div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-5);">
+          <select id="message-status-filter" class="form-select" style="width:auto;font-size:var(--text-sm);" onchange="loadAdminMessages()">
+            <option value="all">Todos</option>
+            <option value="unread">Sin leer</option>
+            <option value="read">Leídos</option>
+          </select>
+        </div>
+
+        <!-- Tabla de mensajes -->
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <div class="admin-panel-title">Bandeja de mensajes</div>
+            <div id="messages-count" style="font-size:var(--text-sm);color:var(--color-text-muted);"></div>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table" id="admin-messages-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Remitente</th>
+                  <th>Asunto</th>
+                  <th>Mensaje</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-messages-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:var(--space-8);">
+                    <div class="loader-spinner" style="margin:0 auto;"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalle de mensaje -->
+  <div class="modal-overlay" id="message-detail-modal">
+    <div class="modal" style="max-width:560px;">
+      <div class="modal-header">
+        <div class="modal-title">Mensaje de contacto</div>
+        <button class="modal-close" onclick="closeModal('message-detail-modal')">✕</button>
+      </div>
+      <div id="message-detail-content">Cargando...</div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('message-detail-modal')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile toggle -->
+  <button class="admin-mobile-toggle" id="admin-mobile-toggle">☰</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

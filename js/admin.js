@@ -504,6 +504,182 @@ async function initAdminClientsPage() {
 }
 
 // ============================================================
+// Admin — Mensajes de contacto
+// ============================================================
+
+const CONTACT_SUBJECT_LABELS = {
+  pedido:        '📦 Consulta sobre un pedido',
+  personalizado: '🎂 Pastel personalizado / corporativo',
+  precio:        '💰 Cotización de precio',
+  distribucion:  '🚚 Distribución / Eventos',
+  otro:          '💬 Otro'
+};
+
+async function initAdminMessagesPage() {
+  await requireAdmin();
+
+  const statusFilter = document.getElementById('message-status-filter');
+  if (statusFilter) {
+    statusFilter.addEventListener('change', () => loadAdminMessages());
+  }
+
+  loadAdminMessages();
+}
+
+async function loadAdminMessages() {
+  const tbody = document.getElementById('admin-messages-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr><td colspan="6" style="text-align:center;padding:2rem;">
+      <div class="loader-spinner" style="margin:0 auto;"></div>
+    </td></tr>
+  `;
+
+  try {
+    let q = _supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+
+    const filter = document.getElementById('message-status-filter')?.value || 'all';
+    if (filter === 'unread') q = q.eq('is_read', false);
+    if (filter === 'read')   q = q.eq('is_read', true);
+
+    const { data, error } = await q;
+    if (error) throw error;
+
+    updateMessageStats(data || []);
+
+    const countEl = document.getElementById('messages-count');
+    if (countEl) countEl.textContent = `${data?.length || 0} mensaje(s)`;
+
+    if (!data?.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--color-text-muted);">No hay mensajes para mostrar.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map(msg => `
+      <tr style="${msg.is_read ? '' : 'background:#fdf6e9;'}">
+        <td style="text-align:center;">${msg.is_read ? '' : '<span title="Sin leer" style="color:var(--color-error);font-size:1.2em;">●</span>'}</td>
+        <td>
+          <div style="font-weight:600;color:var(--color-primary);">${msg.name}</div>
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);">${msg.email}</div>
+        </td>
+        <td style="font-size:var(--text-sm);">${CONTACT_SUBJECT_LABELS[msg.subject] || msg.subject || '—'}</td>
+        <td style="max-width:260px;font-size:var(--text-sm);color:var(--color-text-muted);
+                   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+          ${msg.message}
+        </td>
+        <td style="font-size:var(--text-xs);color:var(--color-text-muted);white-space:nowrap;">${formatDateTime(msg.created_at)}</td>
+        <td>
+          <div class="table-actions">
+            <button class="btn btn-outline btn-sm" onclick="viewMessageDetail('${msg.id}')">👁 Ver</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--color-error);">Error: ${err.message}</td></tr>`;
+  }
+}
+
+function updateMessageStats(allNotFiltered) {
+  // Stats siempre sobre el total, no sobre el filtro activo
+  _supabase.from('contact_messages').select('id, is_read, created_at').then(({ data }) => {
+    if (!data) return;
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - 7);
+
+    setStatValue('stat-total-messages',  data.length);
+    setStatValue('stat-unread-messages', data.filter(m => !m.is_read).length);
+    setStatValue('stat-week-messages',   data.filter(m => new Date(m.created_at) >= startOfWeek).length);
+  });
+}
+
+async function viewMessageDetail(id) {
+  openModal('message-detail-modal');
+  const content = document.getElementById('message-detail-content');
+  content.innerHTML = '<div class="loader-spinner" style="margin:2rem auto;"></div>';
+
+  try {
+    const { data: msg, error } = await _supabase
+      .from('contact_messages')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    // Marcar como leído automáticamente al abrir
+    if (!msg.is_read) {
+      await _supabase.from('contact_messages').update({ is_read: true }).eq('id', id);
+      loadAdminMessages();
+      loadUnreadMessagesBadge();
+    }
+
+    content.innerHTML = `
+      <div style="display:grid;gap:var(--space-4);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+          <div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Nombre</div>
+            <div style="font-weight:600;">${msg.name}</div>
+          </div>
+          <div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Fecha</div>
+            <div>${formatDateTime(msg.created_at)}</div>
+          </div>
+          <div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Email</div>
+            <div><a href="mailto:${msg.email}">${msg.email}</a></div>
+          </div>
+          <div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Teléfono</div>
+            <div>${msg.phone ? `<a href="https://wa.me/${msg.phone.replace(/\D/g,'')}" target="_blank">${msg.phone}</a>` : '—'}</div>
+          </div>
+          <div style="grid-column:1/-1;">
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Asunto</div>
+            <div>${CONTACT_SUBJECT_LABELS[msg.subject] || msg.subject || '—'}</div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--color-border);padding-top:var(--space-4);">
+          <div style="font-weight:600;margin-bottom:var(--space-2);">Mensaje:</div>
+          <div style="font-size:var(--text-sm);line-height:1.7;white-space:pre-wrap;">${msg.message}</div>
+        </div>
+
+        <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;border-top:1px solid var(--color-border);padding-top:var(--space-4);">
+          <a class="btn btn-primary btn-sm" href="mailto:${msg.email}?subject=Re: CakeSphere">✉️ Responder por email</a>
+          ${msg.phone ? `<a class="btn btn-success btn-sm" href="https://wa.me/${msg.phone.replace(/\D/g,'')}" target="_blank">💬 Responder por WhatsApp</a>` : ''}
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    content.innerHTML = `<p style="color:var(--color-error);">Error: ${err.message}</p>`;
+  }
+}
+
+/**
+ * Carga el conteo de mensajes sin leer para el badge del sidebar (todas las páginas admin)
+ */
+async function loadUnreadMessagesBadge() {
+  const badge = document.getElementById('unread-messages-badge');
+  if (!badge) return;
+  try {
+    const { count } = await _supabase
+      .from('contact_messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_read', false);
+
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch (e) {}
+}
+
+// ============================================================
 // Admin Sidebar — toggle mobile
 // ============================================================
 
@@ -529,5 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (page === 'products.html')  initAdminProductsPage();
   if (page === 'orders.html')    initAdminOrdersPage();
   if (page === 'clients.html')   initAdminClientsPage();
+  if (page === 'messages.html')  initAdminMessagesPage();
   if (page === 'login.html' && window.location.pathname.includes('/admin/')) initAdminLoginForm();
+
+  // Badge de mensajes sin leer, visible en todas las páginas admin con sesión
+  if (page !== 'login.html') loadUnreadMessagesBadge();
 });
