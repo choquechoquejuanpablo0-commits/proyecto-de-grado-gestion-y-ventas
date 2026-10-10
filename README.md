@@ -1,6 +1,51 @@
-# 🎂 CAKESPHERE — Guía de Configuración
+# 🎂 CakeSphere — Pastelería Artesanal Online
 
-## Estructura del proyecto
+Aplicación web para la venta de pasteles artesanales: catálogo, personalización, carrito, pedidos con varios métodos de pago y panel de administración privado. Proyecto de grado de la **Carrera Técnica en Sistemas Informáticos (2026)**.
+
+- **Negocio:** CakeSphere
+- **Ubicación:** Warnes – Satélite Norte, Santa Cruz, Bolivia
+- **Teléfono / WhatsApp:** [+591 78594895](https://wa.me/59178594895)
+- **Correo:** hola@cakesphere.com
+- **Instagram:** [@cakeshere__ventas_de_pasteles](https://www.instagram.com/cakeshere__ventas_de_pasteles)
+- **Horario de atención:** Lunes a Sábado de 9:00 a 21:00 · Domingos de 9:00 a 18:00
+- **Moneda:** Bolivianos (Bs) · **Costo de envío:** Bs 5.00
+
+---
+
+## 🛠️ Tecnologías
+
+| Capa | Tecnología |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript (vanilla) |
+| Base de datos y autenticación | Supabase (PostgreSQL + Auth + Storage + RLS) |
+| Control de versiones | Git y GitHub |
+| Despliegue | Vercel |
+
+---
+
+## ✨ Funcionalidades
+
+**Clientes**
+- Catálogo con categorías, disponibilidad y stock por tamaño/porción
+- Detalle de producto con personalización (tamaño, sabor, cobertura, texto, etc.)
+- Carrito de compras (guardado en `localStorage`)
+- Checkout con resumen del pedido y 4 métodos de pago: efectivo, transferencia, Yape (QR) y tarjeta de crédito/débito
+- Registro, inicio de sesión e historial de pedidos
+- Formulario de contacto y enlace directo a WhatsApp
+
+**Administrador**
+- Login exclusivo del administrador
+- Dashboard con estadísticas
+- Gestión de productos (crear, editar, eliminar, precios, imágenes, stock y disponibilidad)
+- Gestión de pedidos y cambio de estado
+- Verificación de pago (simulada)
+- Lista de clientes y bandeja de mensajes de contacto
+
+> ⚠️ Los pagos con tarjeta y la verificación de transferencia son **simulados** y no realizan ningún cobro real. Están pensados para la demostración del proyecto de grado.
+
+---
+
+## 📁 Estructura del proyecto
 
 ```
 cakesphere/
@@ -14,22 +59,27 @@ cakesphere/
 ├── login.html              ← Login de clientes
 ├── register.html           ← Registro de clientes
 ├── orders.html             ← Historial de pedidos (cliente)
+├── QR PASTEL.png           ← Código QR de pago (Yape)
 ├── admin/
 │   ├── login.html          ← Login EXCLUSIVO del admin
 │   ├── dashboard.html      ← Panel de estadísticas
 │   ├── products.html       ← Gestión de productos
 │   ├── orders.html         ← Gestión de pedidos
-│   └── clients.html        ← Lista de clientes
+│   ├── clients.html        ← Lista de clientes
+│   └── mensajes.html       ← Mensajes del formulario de contacto
 ├── css/
 │   ├── main.css            ← Variables, reset, tipografía
 │   ├── components.css      ← Navbar, botones, cards, modales
 │   ├── pages.css           ← Estilos por página
 │   └── admin.css           ← Panel admin
 ├── sql/
-│   ├── schema.sql           ← Crea las tablas + productos de ejemplo (con fotos)
-│   └── actualizar_imagenes.sql  ← Actualiza las fotos si ya habías corrido schema.sql
+│   ├── schema.sql                  ← Tablas, políticas RLS, funciones y buckets
+│   ├── agregar_productos.sql       ← Agrega productos al catálogo
+│   ├── actualizar_imagenes.sql     ← Actualiza las fotos de los productos
+│   ├── stok_por_porcion.sql        ← Stock individual por tamaño/porción
+│   └── agregar_estado_de_pago.sql  ← Columnas para el estado de pago
 └── js/
-    ├── supabase.js         ← ⚠️ CONFIGURAR AQUÍ tus credenciales
+    ├── supabase.js         ← ⚠️ Credenciales y constantes del negocio
     ├── ui.js               ← Toast, loader, modales, utilidades
     ├── auth.js             ← Autenticación
     ├── cart.js             ← Carrito
@@ -40,138 +90,95 @@ cakesphere/
 
 ---
 
+## 🗄️ Base de datos (Supabase)
+
+Tablas principales: `profiles`, `products`, `orders`, `order_items` y `contact_messages`.
+Buckets de Storage: `products` y `references` (públicos).
+Seguridad: Row Level Security (RLS) activado; solo el correo del administrador puede modificar productos y pedidos.
+
+---
+
 ## ⚙️ Pasos para poner en funcionamiento
 
-### 1. Crear proyecto en Supabase
-
-1. Ve a [https://supabase.com](https://supabase.com) y crea una cuenta gratuita.
+### 1. Crear el proyecto en Supabase
+1. Entra a [https://supabase.com](https://supabase.com) y crea una cuenta gratuita.
 2. Crea un nuevo proyecto.
-3. Ve a **Settings → API** y copia:
-   - **Project URL** (ej: `https://abcdef.supabase.co`)
-   - **anon public key** (la clave pública)
+3. Ve a **Settings → API** y copia el **Project URL** y la **anon public key**.
 
 ### 2. Configurar credenciales
-
-Abre el archivo `js/supabase.js` y reemplaza:
+Abre `js/supabase.js` y reemplaza:
 
 ```javascript
 const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';
 const SUPABASE_ANON_KEY = 'TU_ANON_KEY_AQUI';
+const ADMIN_EMAIL       = 'admin@cakesphere.com';
+const DELIVERY_FEE      = 5.00;   // Costo de envío en Bs
+const CURRENCY          = 'Bs';
 ```
 
-También ajusta el email del admin si lo deseas:
+### 3. Crear las tablas
+En Supabase, ve a **SQL Editor → New query** y ejecuta los scripts de la carpeta `sql/` en este orden:
 
-```javascript
-const ADMIN_EMAIL = 'admin@cakesphere.com';
-```
-
-### 3. Crear las tablas en Supabase
-
-1. En tu proyecto de Supabase, ve a **SQL Editor**.
-2. Haz click en **New query**.
-3. Copia y pega el contenido del archivo `sql/schema.sql` (o el SQL que está en los comentarios de `js/supabase.js`).
-4. Ejecuta con **Run**.
-
-> 💡 **¿Ya habías ejecutado `schema.sql` antes?** El script solo inserta los productos de ejemplo si la tabla está vacía, así que si ya tenías datos, pegarlo de nuevo no actualizará las fotos. En ese caso, ejecuta también `sql/actualizar_imagenes.sql` para refrescar las fotos de los 6 productos de ejemplo.
+1. `schema.sql`
+2. `agregar_productos.sql` (opcional, agrega productos al catálogo)
+3. `stok_por_porcion.sql`
+4. `agregar_estado_de_pago.sql`
+5. `actualizar_imagenes.sql` (opcional, solo si quieres refrescar las fotos)
 
 ### 4. Crear el usuario administrador
+1. En Supabase, ve a **Authentication → Users → Add user**.
+2. Correo: `admin@cakesphere.com` (el mismo de `ADMIN_EMAIL`).
+3. Define una contraseña segura. **No existe registro público para el administrador.**
 
-1. En Supabase, ve a **Authentication → Users**.
-2. Haz click en **Add user**.
-3. Ingresa:
-   - **Email:** `admin@cakesphere.com` (o el que configuraste en `ADMIN_EMAIL`)
-   - **Password:** Una contraseña segura que solo tú conozcas
-4. ✅ Guarda bien esa contraseña. **No existe registro público para el admin.**
+### 5. Verificar Storage
+El `schema.sql` crea los buckets automáticamente. Si prefieres hacerlo a mano, crea dos buckets públicos en **Storage**: `products` y `references`.
 
-### 5. Agregar productos de ejemplo (opcional)
-
-En el **SQL Editor**, ejecuta el INSERT de productos de ejemplo que está en los comentarios de `js/supabase.js`.
-
-### 6. Configurar Storage para imágenes
-
-El SQL del schema crea automáticamente los buckets. Si prefieres hacerlo manualmente:
-
-1. Ve a **Storage** en Supabase.
-2. Crea un bucket llamado `products` (público).
-3. Crea un bucket llamado `references` (público).
-
-### 7. Abrir el sitio
-
-- Abre `index.html` en tu navegador (doble clic o con un servidor local).
-- Para el panel admin, ve a `admin/login.html`.
+### 6. Abrir el sitio
+- Abre `index.html` en el navegador (mejor con un servidor local, por ejemplo la extensión *Live Server* de VS Code).
+- Panel de administración: `admin/login.html`.
 
 ---
 
 ## 🎨 Personalización
 
-### Cambiar información del negocio
-
-Busca y reemplaza en todos los archivos HTML:
-
-| Texto a buscar | Reemplazar por |
-|---|---|
-| `CakeSphere` | Nombre de tu negocio |
-| `+51 999 000 000` | Tu número de teléfono |
-| `hola@cakesphere.com` | Tu email |
-| `Lima, Perú` | Tu ciudad |
-| `admin@cakesphere.com` | Tu email de admin |
-
-### Cambiar colores
-
-En `css/main.css`, modifica las variables:
+Los colores se cambian en `css/main.css`:
 
 ```css
---color-primary:     #1A0A2E;   /* Color principal (morado oscuro) */
+--color-primary:     #1A0A2E;   /* Morado oscuro */
 --color-accent-gold: #C9A96E;   /* Dorado */
 --color-accent-rose: #E8C4D8;   /* Rosa */
---color-bg:          #FAF7F2;   /* Fondo */
-```
-
-### Cambiar moneda
-
-En `js/supabase.js`:
-
-```javascript
-const CURRENCY    = 'Bs';    // Cambiar a '$', '€', etc.
-const DELIVERY_FEE = 5.00;  // Tarifa de envío
+--color-bg:          #FAF7F2;   /* Fondo crema */
 ```
 
 ---
 
-## 🚀 Publicar en internet (gratis)
+## 🚀 Despliegue
 
-### Opción A: Netlify (recomendado)
-1. Ve a [netlify.com](https://netlify.com)
-2. Arrastra la carpeta `cakesphere/` a la pantalla de Netlify
-3. ¡Listo! Tendrás una URL pública en segundos.
+El sitio está publicado con **Vercel**, conectado al repositorio de GitHub, por lo que cada `git push` a la rama `main` genera un nuevo despliegue automático.
 
-### Opción B: GitHub Pages
-1. Sube los archivos a un repositorio de GitHub
-2. Ve a **Settings → Pages**
-3. Selecciona la rama `main` y la carpeta raíz
-
-### Opción C: Vercel
-1. Conecta tu repositorio de GitHub a [vercel.com](https://vercel.com)
-2. Deploy automático en cada push.
+Alternativas gratuitas: Netlify (arrastrando la carpeta del proyecto) o GitHub Pages (**Settings → Pages**).
 
 ---
 
 ## ❓ Preguntas frecuentes
 
 **¿Qué pasa si el stock llega a 0?**
-El producto aparece automáticamente como "Agotado" y no se puede agregar al carrito.
+El producto (o el tamaño/porción) aparece como "Agotado" y no se puede agregar al carrito.
 
-**¿Cómo recupero la contraseña del admin?**
-Desde **Supabase → Authentication → Users**, haz click en el usuario admin y usa "Send reset email".
+**¿Cómo recupero la contraseña del administrador?**
+Desde **Supabase → Authentication → Users**, selecciona al usuario admin y usa "Send reset email".
 
 **¿Puedo usar el sitio sin Supabase?**
-El sitio funciona parcialmente sin Supabase (el carrito usa localStorage), pero los productos, pedidos y autenticación requieren Supabase.
+Solo parcialmente: el carrito funciona con `localStorage`, pero los productos, pedidos y la autenticación requieren Supabase.
 
-**¿Cómo agrego WhatsApp Business?**
-Reemplaza el número en todos los links `https://wa.me/51999000000` con tu número real (sin guiones ni espacios).
+**¿Cómo cambio el número de WhatsApp?**
+Reemplaza `59178594895` en los enlaces `https://wa.me/59178594895` de los archivos HTML (sin signos ni espacios).
 
 ---
 
-## 📞 Soporte
+## 📞 Contacto
 
-¿Tienes problemas con la configuración? Revisa la [documentación de Supabase](https://supabase.com/docs) o consulta en los foros de la comunidad.
+**CakeSphere** · Warnes – Satélite Norte, Santa Cruz, Bolivia
+📱 +591 78594895 · ✉️ hola@cakesphere.com · 📷 Instagram: @cakeshere__ventas_de_pasteles
+
+© 2026 CakeSphere. Todos los derechos reservados.
